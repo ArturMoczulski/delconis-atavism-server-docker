@@ -9,7 +9,7 @@ FROM mysql:5.7
 
 RUN yum update -y
 COPY --from=builder /atavism_server/sql/ /sql/
-COPY mysql/config_db.sh .
-COPY mysql/1.sql /docker-entrypoint-initdb.d/
+COPY mysql-master/config_db.sh .
+COPY 1.sql /docker-entrypoint-initdb.d/
 RUN chmod +x config_db.sh
 RUN ./config_db.sh

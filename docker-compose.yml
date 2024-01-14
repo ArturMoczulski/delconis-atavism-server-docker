@@ -1,37 +1,75 @@
 version: '3'
 services:
-  mysql:
+  admin-sql:
     env_file:
-      - mysql.env
+      - mysql-admin/sql-admin.env
     build:
       context: .
-      dockerfile: mysql/Dockerfile
+      dockerfile: mysql-admin/Dockerfile
     volumes:
-      - mysql-data:/var/lib/mysql
-    ports:
-      - 3306:3306
+      - admin-data:/var/lib/mysql
     networks:
       - backend
-  world:
+  atavism-sql:
     env_file:
-      - server.env
+      - mysql-atavism/sql-atavism.env
     build:
       context: .
-      dockerfile: world/Dockerfile
+      dockerfile: mysql-atavism/Dockerfile
     volumes:
-      - world-logs:/var/log
-    ports:
-      - 8080:8080
+      - atavism-data:/var/lib/mysql
     networks:
       - backend
-      - frontend
+  master-sql:
+    env_file:
+      - mysql-master/sql-master.env
+    build:
+      context: .
+      dockerfile: mysql-master/Dockerfile
+    volumes:
+      - master-data:/var/lib/mysql
+    networks:
+      - backend
+  world-sql:
+    env_file:
+      - mysql-world-content/sql-world-content.env
+    build:
+      context: .
+      dockerfile: mysql-world-content/Dockerfile
+    volumes:
+      - world-data:/var/lib/mysql
+    networks:
+      - backend
+  # world:
+  #   env_file:
+  #     - server.env
+  #   build:
+  #     context: .
+  #     dockerfile: world/Dockerfile
+  #   volumes:
+  #     - world-logs:/var/log
+  #   ports:
+  #     - 5042:5042
+  #     - 5052:5052
+  #     - 5566:5566
+  #     - 9005:9005
+  #     - 9010:9010
+  #   environment:
+  #     - SQL_SERVER=mysql
+  #   networks:
+  #     - backend
 volumes:
-  mysql-data:
+  admin-data:
     driver: local
+  atavism-data:
+    driver: local
+  master-data:
+    driver: local
+  world-data:
+    driver: local
+
   world-logs:
     driver: local
 networks:
   backend:
-    driver: bridge
-  frontend:
     driver: bridge

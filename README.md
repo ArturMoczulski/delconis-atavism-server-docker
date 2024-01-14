@@ -9,8 +9,8 @@ Provides and example on how to create containers for a multi server setup.
 ### Getting started
 - Download the atavism_server to this projects root directory. 
 example. `atavism_server_10_9_0_20231229_1523.zip`
-- Configure credentails in the mysql.env with values unique to you
-- Configure credentsils in the server.env with values unique to you, keep them safe!
+- Configure you credentails root password, and username/password for your services to connect with in each of the `mysql-{service}/sql-{service}.env` files. 
+  - These are senstive, do not commit or share these with anyone!
 - Build the containers with docker compose `docker compose build`
 - Run the containers with docker compose `docker compose up -d`
 

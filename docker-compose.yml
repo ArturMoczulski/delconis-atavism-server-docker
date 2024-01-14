@@ -40,24 +40,31 @@ services:
       - world-data:/var/lib/mysql
     networks:
       - backend
-  # world:
-  #   env_file:
-  #     - server.env
-  #   build:
-  #     context: .
-  #     dockerfile: world/Dockerfile
-  #   volumes:
-  #     - world-logs:/var/log
-  #   ports:
-  #     - 5042:5042
-  #     - 5052:5052
-  #     - 5566:5566
-  #     - 9005:9005
-  #     - 9010:9010
-  #   environment:
-  #     - SQL_SERVER=mysql
-  #   networks:
-  #     - backend
+  world:
+    build:
+      context: .
+      dockerfile: all-in-one/Dockerfile
+    volumes:
+      - world-logs:/var/log
+    ports:
+      - 5042:5042
+      - 5052:5052
+      - 5566:5566
+      - 9005:9005
+      - 9010:9010
+    env_file:
+      - mysql-admin/sql-admin.env
+      - mysql-atavism/sql-atavism.env
+      - mysql-master/sql-master.env
+      - mysql-world-content/sql-world-content.env
+      - all-in-one/all.env
+    depends_on:
+      - admin-sql
+      - atavism-sql
+      - master-sql
+      - world-sql
+    networks:
+      - backend
 volumes:
   admin-data:
     driver: local

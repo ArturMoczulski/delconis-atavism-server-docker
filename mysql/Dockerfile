@@ -1,19 +1,15 @@
 ## Extract the contents of atavism_server_10_9_0_2023.zip to the current directory
-
 FROM alpine:3.7 as builder
 RUN apk add --no-cache unzip
 COPY *.zip .
 RUN unzip *.zip
 
 ## MySql Server get the SQL scripts from the Atavism Server
-ARG NEW_INSTALL
 FROM mysql:5.7
+
+RUN yum update -y
 COPY --from=builder /atavism_server/sql/ /sql/
-COPY mysql/copy_sql.sh .
-RUN chmod +x copy_sql.sh
-RUN ./copy_sql.sh
-
-
-
-
-
+COPY mysql/config_db.sh .
+COPY mysql/1.sql /docker-entrypoint-initdb.d/
+RUN chmod +x config_db.sh
+RUN ./config_db.sh

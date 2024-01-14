@@ -1,9 +1,37 @@
 version: '3'
 services:
   mysql:
+    env_file:
+      - mysql.env
     build:
       context: .
       dockerfile: mysql/Dockerfile
-      args:
-        - VERSION=10.9.0_20231229_1523
-    # Add other service configurations here
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - backend
+  world:
+    env_file:
+      - server.env
+    build:
+      context: .
+      dockerfile: world/Dockerfile
+    volumes:
+      - world-logs:/var/log
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+      - frontend
+volumes:
+  mysql-data:
+    driver: local
+  world-logs:
+    driver: local
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge

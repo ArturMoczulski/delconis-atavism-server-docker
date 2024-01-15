@@ -36,7 +36,7 @@ sed -i 's/atavism.auth.db_password=.*/atavism.auth.db_password='"$MASTER_DATABAS
 sed -i 's/atavism.auth.db_hostname=.*/atavism.auth.db_hostname='"mysql-master"'/' /atavism_server/bin/world.properties
 
 
-sed -i 's/atavism.log_level.*/atavism.log_level=0/' /atavism_server/bin/world.properties
+#sed -i 's/atavism.log_level.*/atavism.log_level=0/' /atavism_server/bin/world.properties
 
 cd /atavism_server/bin/ && ./auth.sh -vC start && ./world.sh -vC start
 

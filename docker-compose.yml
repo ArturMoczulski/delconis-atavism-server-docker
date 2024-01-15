@@ -59,6 +59,8 @@ services:
     volumes:
       - world-logs:/atavism_server/logs
     environment:
+      - ATAVISM_EMAIL=${ATAVISM_EMAIL}
+      - ATAVISM_LICENCE_KEY=${ATAVISM_LICENCE_KEY}
       - ADMIN_DATABASE_USER=${ADMIN_DATABASE_USER}
       - ADMIN_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
       - MASTER_DATABASE_USER=${ADMIN_DATABASE_USER}

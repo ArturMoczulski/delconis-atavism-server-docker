@@ -10,7 +10,7 @@ sed -i 's/atavism.licence.email.*/atavism.licence.email='"$ATAVISM_EMAIL"'/' /at
 sed -i 's/atavism.licence.key.*/atavism.licence.key='"$ATAVISM_LICENCE_KEY"'/' /atavism_server/bin/world.properties
 sed -i 's/atavism.login.bindaddress.*/atavism.login.bindaddress='"localhost"'/' /atavism_server/bin/world.properties
 sed -i 's/atavism.proxy.bindaddress.*/atavism.proxy.bindaddress='"localhost"'/' /atavism_server/bin/world.properties
-sed -i 's/atavism.proxy.externaladdress.*/atavism.proxy.externaladdress='"host.docker.internal"'/' /atavism_server/bin/world.properties
+sed -i 's/atavism.proxy.externaladdress.*/atavism.proxy.externaladdress='"localhost"'/' /atavism_server/bin/world.properties
 
 ## Atavism DB
 sed -i 's/atavism.db_user=.*/atavism.db_user='"$ATAVISM_DATABASE_USER"'/' /atavism_server/bin/world.properties

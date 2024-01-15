@@ -29,4 +29,7 @@ sed -i 's/atavism.auth.db_user=.*/atavism.auth.db_user='"$AUTH_DATABASE_USER"'/'
 sed -i 's/atavism.auth.db_password=.*/atavism.auth.db_password='"$AUTH_DATABASE_PASSWORD"'/' /atavism_server/bin/world.properties
 sed -i 's/atavism.auth.db_hostname=.*/atavism.auth.db_hostname='"auth-sql"'/' /atavism_server/bin/world.properties
 
+sed -i 's/atavism.msgsvr_hostname.*/atavism.msgsvr_hostname=host.docker.internal' /atavism_server/bin/world.properties
+sed -i 's/atavism.log_level.*/atavism.log_level=0/' /atavism_server/bin/world.properties
+
 cd /atavism_server/bin/ && ./auth.sh -vC start && ./world.sh -vC start

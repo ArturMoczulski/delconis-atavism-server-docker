@@ -8,8 +8,6 @@ services:
       dockerfile: mysql-admin/Dockerfile
     volumes:
       - admin-data:/var/lib/mysql
-    networks:
-      - backend
   atavism-sql:
     env_file:
       - mysql-atavism/sql-atavism.env
@@ -18,8 +16,6 @@ services:
       dockerfile: mysql-atavism/Dockerfile
     volumes:
       - atavism-data:/var/lib/mysql
-    networks:
-      - backend
   master-sql:
     env_file:
       - mysql-master/sql-master.env
@@ -28,24 +24,19 @@ services:
       dockerfile: mysql-master/Dockerfile
     volumes:
       - master-data:/var/lib/mysql
-    networks:
-      - backend
   world-sql:
     env_file:
       - mysql-world-content/sql-world-content.env
     build:
       context: .
-      dockerfile: mysql-world-content/Dockerfile
     volumes:
       - world-data:/var/lib/mysql
-    networks:
-      - backend
   world:
     build:
       context: .
       dockerfile: all-in-one/Dockerfile
     volumes:
-      - world-logs:/var/log
+      - world-logs:/atavism_server/logs
     ports:
       - 5042:5042
       - 5052:5052
@@ -63,8 +54,6 @@ services:
       - atavism-sql
       - master-sql
       - world-sql
-    networks:
-      - backend
 volumes:
   admin-data:
     driver: local
@@ -74,9 +63,5 @@ volumes:
     driver: local
   world-data:
     driver: local
-
   world-logs:
     driver: local
-networks:
-  backend:
-    driver: bridge

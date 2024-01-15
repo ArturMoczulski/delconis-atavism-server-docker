@@ -18,6 +18,13 @@ example. `atavism_server_10_9_0_20231229_1523.zip`
 - Configure `all-in-one/all.env` with your email and licence key
 - Build the containers with docker compose `docker compose build`
 - Run the containers with docker compose `docker compose up -d`
+  - Deploys 4 MySQL Servers
+    - atavismonline-server-docker_admim-sql
+    - atavismonline-server-docker_atavism-sql
+    - atavismonline-server-docker_master-sql
+    - atavismonline-server-docker_world-sql
+  - Deploys All-In-One server
+    - atavismonline-server-docker_world-1
 
 ### Goals
 - Easy `docker compose up -d` Setup for Demo server

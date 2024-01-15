@@ -10,6 +10,7 @@ RUN apt-get update -y
 RUN apt-get install -y procps
 COPY --from=builder /atavism_server/ /atavism_server/
 COPY all-in-one/start.sh .
+COPY private.key /atavism_server/bin
 RUN chmod +x start.sh
 
-ENTRYPOINT [ "sh", "start.sh" ]
+CMD [ "sh", "start.sh" ]

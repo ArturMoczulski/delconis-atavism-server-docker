@@ -7,27 +7,30 @@ Provides and example on how to create containers for a multi server setup.
 - Atavism Server Download
 
 ### Getting started
-- Download the atavism_server to this projects root directory. 
-example. `atavism_server_10_9_0_20231229_1523.zip`
-- Configure you credentails root password, and username/password for your services to connect with in each of the `mysql-{service}/sql-{service}.env` files. 
-  - These are senstive, do not commit or share these with anyone!
-  - All SQL default to 
-    - MYSQL_ROOT_PASSWORD: r007pa55w0rd
-    - USER: atavism
-    - PASSWORD: A7AV15M
-- Configure `all-in-one/all.env` with your email and licence key
+- Download the atavism_server.zip to the root of this project `atavism_server_10_9_0_20231229_1523.zip`
+- Update the `.env` file with your
+  - ATAVISM_EMAIL with your email
+  - ATAVISM_KEY with your liscense key
+  - Update MySQL Credentails or create override file. 
+- Create or provide a OpenSSH Key `private.key` to the root of this project
+  ```
+  docker run -it -v .:/key mysql /bin/sh
+  cd key
+  openssl genrsa -des3 -out atavism.pem 2048
+  ## Remember Password! it will prompt you a few times for it
+  openssl rsa -in atavism.pem -outform PEM -pubout -out atavismkey.txt
+  openssl rsa -in atavism.pem -out private.pem -outform PEM
+  openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
+  ```
+ - `atavismkey.key` Store Securely, you can use this in this project for subsequent builds, you should not commit this file
+ - `atavismkey.txt` Store Securely, this file should be copyed to your Unity Project
+ - `atavismkey.pem` Store Securely, this is your master file, you can create more private and public keys with this, store this secruly. 
 - Build the containers with docker compose `docker compose build`
 - Run the containers with docker compose `docker compose up -d`
-  - Deploys 4 MySQL Servers
-    - atavismonline-server-docker_admim-sql
-    - atavismonline-server-docker_atavism-sql
-    - atavismonline-server-docker_master-sql
-    - atavismonline-server-docker_world-sql
-  - Deploys All-In-One server
-    - atavismonline-server-docker_world-1
-
+- Configure Unity Client with User/Passwords/PublicKey as IP information as needed
+  - `docker inspect atavismonline-server-docker-world-1` (Network Section) might be of use
 ### Goals
-- Easy `docker compose up -d` Setup for Demo server
-- Build Containers for each service (MySql, Auth, World, Etc)
-- Integration (Wordpress or other) for Website Example on Account Creation
-- Build Client in Unity Build Container, provide all configuration and export resources to prefab server?
+- [x] Easy `docker compose up -d` Setup for Demo server
+- [ ] Build Containers for each service (MySql, Auth, World, Etc)
+- [ ] Integration (Wordpress or other) for Website Example on Account Creation, Or Atavism Editor
+- [ ] Build Client in Unity Build Container, provide all configuration and export resources to prefab server?

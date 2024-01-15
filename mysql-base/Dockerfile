@@ -5,11 +5,8 @@ COPY *.zip .
 RUN unzip *.zip
 
 ## MySql Server get the SQL scripts from the Atavism Server
-FROM mysql:5.7
+FROM mysql:8.2
+ARG SQL_FILE=admin.sql
+COPY --from=builder /atavism_server/sql/New_Install_with_Demo_Data/${SQL_FILE} /docker-entrypoint-initdb.d/1.sql
 
-RUN yum update -y
-COPY --from=builder /atavism_server/sql/ /sql/
-COPY mysql-master/config_db.sh .
-COPY 1.sql /docker-entrypoint-initdb.d/
-RUN chmod +x config_db.sh
-RUN ./config_db.sh
+

@@ -1,34 +1,55 @@
 version: '3'
 services:
-  admin-sql:
-    env_file:
-      - mysql-admin/sql-admin.env
+  mysql-master:
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MASTER_MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MASTER_DATABASE_USER}
+      - MYSQL_PASSWORD=${MASTER_DATABASE_PASSWORD}
+      - MYSQL_DATABASE=master
     build:
       context: .
-      dockerfile: mysql-admin/Dockerfile
-    volumes:
-      - admin-data:/var/lib/mysql
-  atavism-sql:
-    env_file:
-      - mysql-atavism/sql-atavism.env
-    build:
-      context: .
-      dockerfile: mysql-atavism/Dockerfile
-    volumes:
-      - atavism-data:/var/lib/mysql
-  master-sql:
-    env_file:
-      - mysql-master/sql-master.env
-    build:
-      context: .
-      dockerfile: mysql-master/Dockerfile
+      dockerfile: mysql-base/Dockerfile
+      args:
+        - SQL_FILE=master.sql
     volumes:
       - master-data:/var/lib/mysql
-  world-sql:
-    env_file:
-      - mysql-world-content/sql-world-content.env
+  mysql-admin:
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ADMIN_MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${ADMIN_DATABASE_USER}
+      - MYSQL_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - MYSQL_DATABASE=admin
     build:
       context: .
+      dockerfile: mysql-base/Dockerfile
+      args:
+        - SQL_FILE=admin.sql
+    volumes:
+      - admin-data:/var/lib/mysql
+  mysql-atavism:
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ATAVISM_MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${ATAVISM_DATABASE_USER}
+      - MYSQL_PASSWORD=${ATAVISM_DATABASE_PASSWORD}
+      - MYSQL_DATABASE=atavism
+    build:
+      context: .
+      dockerfile: mysql-base/Dockerfile
+      args:
+        - SQL_FILE=atavism.sql
+    volumes:
+      - atavism-data:/var/lib/mysql
+  mysql-world:
+    environment:
+      - MYSQL_ROOT_PASSWORD=${WORLD_MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${WORLD_DATABASE_USER}
+      - MYSQL_PASSWORD=${WORLD_DATABASE_PASSWORD}
+      - MYSQL_DATABASE=world_content
+    build:
+      context: .
+      dockerfile: mysql-base/Dockerfile
+      args:
+        - SQL_FILE=world_content.sql
     volumes:
       - world-data:/var/lib/mysql
   world:
@@ -37,23 +58,28 @@ services:
       dockerfile: all-in-one/Dockerfile
     volumes:
       - world-logs:/atavism_server/logs
+    environment:
+      - ADMIN_DATABASE_USER=${ADMIN_DATABASE_USER}
+      - ADMIN_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - MASTER_DATABASE_USER=${ADMIN_DATABASE_USER}
+      - MASTER_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - WORLD_DATABASE_USER=${ADMIN_DATABASE_USER}
+      - WORLD_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - ATAVISM_DATABASE_USER=${ADMIN_DATABASE_USER}
+      - ATAVISM_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
     ports:
       - 5042:5042
       - 5052:5052
       - 5566:5566
       - 9005:9005
       - 9010:9010
-    env_file:
-      - mysql-admin/sql-admin.env
-      - mysql-atavism/sql-atavism.env
-      - mysql-master/sql-master.env
-      - mysql-world-content/sql-world-content.env
-      - all-in-one/all.env
     depends_on:
-      - admin-sql
-      - atavism-sql
-      - master-sql
-      - world-sql
+     - mysql-master
+    links:
+     - mysql-master
+     - mysql-admin
+     - mysql-atavism
+     - mysql-world
 volumes:
   admin-data:
     driver: local
@@ -65,3 +91,6 @@ volumes:
     driver: local
   world-logs:
     driver: local
+networks:
+  backend:
+    driver: bridge

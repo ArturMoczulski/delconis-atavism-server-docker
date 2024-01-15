@@ -33,6 +33,22 @@ Provides and example on how to create containers for a multi server setup.
   - `docker inspect atavismonline-server-docker-world-1` (Network Section) might be of use
 ### Goals
 - [x] Easy `docker compose up -d` Setup for Demo server
-- [ ] Build Containers for each service (MySql, Auth, World, Etc)
-- [ ] Integration (Wordpress or other) for Website Example on Account Creation, Or Atavism Editor
-- [ ] Build Client in Unity Build Container, provide all configuration and export resources to prefab server?
+- [ ] Build Containers for each Demo service
+  - [X] MySQL Admin
+  - [X] MySQL Atavism
+  - [X] MySQL master
+  - [X] MySQL world_content
+  - [ ] All in One
+  - [ ] Auth Server
+  - [ ] Proxy Server
+  - [ ] Prefab Server
+  - [ ] Auction Server
+  - [ ] ETC.
+- [ ] Add Intergration, such as Wordpress.
+- [ ] Add Atavism Editor Webapp
+- [ ] Build Containers for each Core Serice
+  - [ ] Same as demo
+  - [ ] Add Client Build
+    - [ ] Export Prefabs/Nav mesh to server
+  - [ ] Create scalable deployment solution on orstration platform
+  - [ ] Create Scale Module to manage creating and destroying instances on orstration plaform

@@ -70,11 +70,11 @@ services:
       - ATAVISM_DATABASE_USER=${ADMIN_DATABASE_USER}
       - ATAVISM_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
     ports:
-      - 5042:5042
-      - 5052:5052
-      - 5566:5566
-      - 9005:9005
-      - 9010:9010
+      - 5042:5042/tcp
+      - 5052:5052/udp
+      - 5566:5566/tcp
+      - 9005:9005/tcp
+      - 9010:9010/udp
     depends_on:
      - mysql-master
     links:

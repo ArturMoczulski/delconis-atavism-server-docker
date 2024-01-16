@@ -38,7 +38,7 @@ Provides and example on how to create containers for a multi server setup.
   - [X] MySQL Atavism
   - [X] MySQL master
   - [X] MySQL world_content
-  - [ ] All in One
+  - [X] All in One
   - [ ] Auth Server
   - [ ] Proxy Server
   - [ ] Prefab Server

@@ -24,9 +24,9 @@ Provides and example on how to create containers for a multi server setup.
    openssl rsa -in atavism.pem -out private.pem -outform PEM
    openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
    ```
-  - `atavismkey.key` Store Securely, you'll want this in the project root when starting a server, it will be copyed to the approprate servers. 
+  - `private.key` Store Securely, you'll want this in the project root when starting a server, it will be copyed to the approprate servers. 
   - `atavismkey.txt` Store Securely, this file should be copyed to your Unity Project
-  - `atavismkey.pem` Store Securely, this is your master file, you can create more private and public keys with this, store this secruly. 
+  - `atavism.pem` Store Securely, this is your master file, you can create more private and public keys with this, store this secruly. 
 - Build the containers with docker compose `docker compose build`
 - Run the containers with docker compose `docker compose up -d`
 - Configure Unity Client with User/Passwords/PublicKey as IP information as needed

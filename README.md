@@ -11,28 +11,43 @@ Provides and example on how to create containers for a multi server setup.
 
 ### Getting started
 
-- Download the atavism_server.zip to the root of this project `atavism_server_10_9_0_20231229_1523.zip`
-- Update the `.env` file with your
-  - ATAVISM_EMAIL with your email
-  - ATAVISM_KEY with your liscense key
-  - Update MySQL Credentails or create override file.
-- ## Create or provide a OpenSSH Key `private.key` to the root of this project
-  ```
-  docker run -it -v .:/key mysql /bin/sh
-  cd key
-  openssl genrsa -des3 -out atavism.pem 2048
-  ## Remember Password! it will prompt you a few times for it
-  openssl rsa -in atavism.pem -outform PEM -pubout -out atavismkey.txt
-  openssl rsa -in atavism.pem -out private.pem -outform PEM
-  openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
-  ```
-  - `private.key` Store Securely, you'll want this in the project root when starting a server, it will be copyed to the approprate servers.
-  - `atavismkey.txt` Store Securely, this file should be copyed to your Unity Project
-  - `atavism.pem` Store Securely, this is your master file, you can create more private and public keys with this, store this secruly.
-- Build the containers with docker compose `docker compose build`
-- Run the containers with docker compose `docker compose up -d`
-- Configure Unity Client with User/Passwords/PublicKey as IP information as needed
-  - `docker inspect atavismonline-server-docker-world-1` (Network Section) might be of use
+1. Download the atavism_server.zip to the root of this project `atavism_server_10_9_0_20231229_1523.zip`. If you have your Atavism Server in a git repo you can also just clone it to the root as `atavism_server` directory. `atavism_server` directory is ignored in this repo's `.gitignore` to make updates easy.
+
+2. Update the `docker/compose/.env` file with your
+
+- ATAVISM_EMAIL with your email
+- ATAVISM_KEY with your liscense key
+- Update MySQL Credentails or create override file.
+
+3. Create or provide a OpenSSH Key `private.key` to the root of this project
+
+```
+docker run -it -v ./ssl/:/key mysql /bin/sh
+cd key
+openssl genrsa -des3 -out atavism.pem 2048
+## Remember Password! it will prompt you a few times for it
+openssl rsa -in atavism.pem -outform PEM -pubout -out atavismkey.txt
+openssl rsa -in atavism.pem -out private.pem -outform PEM
+openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
+```
+
+#### For development setup
+
+4. Build the containers with docker compose `docker-compose -f docker/compose/development.yml build`
+5. Run `docker-compose -f docker/compose/development.yml up -d`
+
+_Note:_ Currently the `world` service does not have a docker healthcheck implemented, so it tends to fail connect to the database at first start. It's recommended to restart the `world` service after a couple of seconds so it reattempts to connect to mysql once it's accepting connections.
+
+#### For production setup
+
+4. Build the containers with docker compose `docker-compose -f docker/compose/production.yml build`
+5. Run `docker-compose -f docker/compose/production.yml up -d`
+
+#### Unity client
+
+6. Configure Unity Client with User/Passwords/PublicKey as IP information as needed
+
+- `docker inspect atavismonline-server-docker-world-1` (Network Section) might be of use
 
 ### Goals
 
@@ -58,55 +73,3 @@ Provides and example on how to create containers for a multi server setup.
   - [ ] Create Scale Module to manage creating and destroying instances on orstration plaform
 
 ## Dev setup
-
-1. Place your Atavism Server files in the `atavism_server` directory of the root of this repository. The `atavism_server` directory is ignored by git in this repo so pulling latest updates will not affect your server files. Your `atavism_server` directory can
-   be another git repo if you store your server files in git.
-
-2. Update the `docker/compose/.env` file with your
-
-- ATAVISM_EMAIL with your email
-- ATAVISM_KEY with your liscense key
-- Update MySQL Credentails or create override file.
-
-3. Create or provide a OpenSSH Key `private.key` to the root of this project
-
-```
-docker run -it -v ./ssl/:/key mysql /bin/sh
-cd key
-openssl genrsa -des3 -out atavism.pem 2048
-## Remember Password! it will prompt you a few times for it
-openssl rsa -in atavism.pem -outform PEM -pubout -out atavismkey.txt
-openssl rsa -in atavism.pem -out private.pem -outform PEM
-openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
-```
-
-4. Build the containers with docker compose `docker-compose -f docker/compose/development.yml build`
-
-5. `docker-compose -f docker/compose/development.yml up -d`
-
-## Production setup
-
-1. Place your Atavism Server files in the `atavism_server` directory of the root of this repository. The `atavism_server` directory is ignored by git in this repo so pulling latest updates will not affect your server files. Your `atavism_server` directory can
-   be another git repo if you store your server files in git.
-
-2. Update the `docker/compose/.env` file with your
-
-- ATAVISM_EMAIL with your email
-- ATAVISM_KEY with your liscense key
-- Update MySQL Credentails or create override file.
-
-3. Create or provide a OpenSSH Key `private.key` to the root of this project
-
-```
-docker run -it -v ./ssl/:/key mysql /bin/sh
-cd key
-openssl genrsa -des3 -out atavism.pem 2048
-## Remember Password! it will prompt you a few times for it
-openssl rsa -in atavism.pem -outform PEM -pubout -out atavismkey.txt
-openssl rsa -in atavism.pem -out private.pem -outform PEM
-openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
-```
-
-4. Build the containers with docker compose `docker-compose -f docker/compose/production.yml build`
-
-5. `docker-compose -f docker/compose/production.yml up -d`

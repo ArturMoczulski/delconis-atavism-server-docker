@@ -3,37 +3,46 @@ name: atavism-server
 include:
   - resources.yml
 services:
-  world:
+  master:
     build:
       context: ./../..
-      dockerfile: docker/images/all-in-one/Dockerfile
+      dockerfile: docker/images/base/Dockerfile
       target: development
     # Map host files to the container for ease of development
     volumes:
       - ../../atavism_server:/atavism_server
       - ../../ssl/private.key:/atavism_server/bin/private.key
-      - ../images/all-in-one/start.sh:/start.sh
-    environment:
-      - ATAVISM_EMAIL=${ATAVISM_EMAIL}
-      - ATAVISM_LICENCE_KEY=${ATAVISM_LICENCE_KEY}
-      - ADMIN_DATABASE_USER=${ADMIN_DATABASE_USER}
-      - ADMIN_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
-      - MASTER_DATABASE_USER=${ADMIN_DATABASE_USER}
-      - MASTER_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
-      - WORLD_DATABASE_USER=${ADMIN_DATABASE_USER}
-      - WORLD_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
-      - ATAVISM_DATABASE_USER=${ADMIN_DATABASE_USER}
-      - ATAVISM_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - ../images/env.sh:/env.sh
+      - ../images/master/start.sh:/start.sh
     ports:
-      - 5042:5042/tcp
-      - 5052:5052/udp
-      - 5566:5566/tcp
       - 9005:9005/tcp
       - 9010:9010/udp
     depends_on:
       - mysql-master
     links:
       - mysql-master
+    env_file: .env
+
+  world:
+    build:
+      context: ./../..
+      dockerfile: docker/images/base/Dockerfile
+      target: development
+    # Map host files to the container for ease of development
+    volumes:
+      - ../../atavism_server:/atavism_server
+      - ../../ssl/private.key:/atavism_server/bin/private.key
+      - ../images/env.sh:/env.sh
+      - ../images/world/start.sh:/start.sh
+    ports:
+      - 5042:5042/tcp
+      - 5052:5052/udp
+      - 5566:5566/tcp
+    depends_on:
+      - mysql-world
+    links:
+      - mysql-master
       - mysql-admin
       - mysql-atavism
       - mysql-world
+    env_file: .env

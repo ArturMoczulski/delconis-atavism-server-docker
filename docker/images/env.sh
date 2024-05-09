@@ -1,10 +1,23 @@
+
+# Hydrate /atavism_server/bin/*.properties files with values from .env
+
+figlet -c "Environment"
+
+YELLOW='\033[0;31m'
+
 # auth.properties
+echo " ${YELLOW}Setting up auth.properties${YELLOW}"
 sed -i 's/atavism.db_user=.*/atavism.db_user='"$MASTER_DATABASE_USER"'/' /atavism_server/bin/auth.properties
 sed -i 's/atavism.db_password=.*/atavism.db_password='"$MASTER_DATABASE_PASSWORD"'/' /atavism_server/bin/auth.properties
 sed -i 's/atavism.socketpolicy.bindaddress.*/atavism.socketpolicy.bindaddress='"localhost"'/' /atavism_server/bin/auth.properties
 sed -i 's/atavism.db_hostname=.*/atavism.db_hostname='"mysql-master"'/' /atavism_server/bin/auth.properties
 
 # world.properties
+echo " ${YELLOW}Setting up world.properties${YELLOW}"
+
+# Configure if all in one is used
+sed -i 's/atavism.all_in_one.enabled=.*/atavism.all_in_one.enabled='"${ATAVISM_ALL_IN_ONE_ENABLED:-true}"'/' /atavism_server/bin/world.properties
+
 ## As Desribed in the Atavism Documentation
 sed -i 's/atavism.licence.email.*/atavism.licence.email='"$ATAVISM_EMAIL"'/' /atavism_server/bin/world.properties
 sed -i 's/atavism.licence.key.*/atavism.licence.key='"$ATAVISM_LICENCE_KEY"'/' /atavism_server/bin/world.properties
@@ -35,13 +48,4 @@ sed -i 's/atavism.auth.db_user=.*/atavism.auth.db_user='"$MASTER_DATABASE_USER"'
 sed -i 's/atavism.auth.db_password=.*/atavism.auth.db_password='"$MASTER_DATABASE_PASSWORD"'/' /atavism_server/bin/world.properties
 sed -i 's/atavism.auth.db_hostname=.*/atavism.auth.db_hostname='"mysql-master"'/' /atavism_server/bin/world.properties
 
-
 #sed -i 's/atavism.log_level.*/atavism.log_level=0/' /atavism_server/bin/world.properties
-
-cd /atavism_server/bin/ && ./auth.sh -vC start && ./world.sh -vC start
-
-while /atavism_server/bin/auth.sh -vC status | grep -q "RUNNING"; do
-    sleep 5
-done
-
-cat logs /atavism_server/logs/master/auth.log

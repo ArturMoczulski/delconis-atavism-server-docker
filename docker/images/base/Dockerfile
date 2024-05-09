@@ -18,7 +18,7 @@
 FROM openjdk:23-slim-bullseye as dependencies
 
 RUN apt-get update -y
-RUN apt-get install -y procps
+RUN apt-get install -y procps figlet
 
 #   ____                 _                                  _   
 #  |  _ \  _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_ 
@@ -28,7 +28,10 @@ RUN apt-get install -y procps
 #                               |_|                             
 FROM dependencies as development
 
-CMD [ "sh", "start.sh" ]
+ARG SERVICE_NAME
+ENV SERVICE_NAME=${SERVICE_NAME}
+
+CMD [ "sh", "start.sh", "${SERVICE_NAME:-server}" ]
 
 #   ____                _            _   _             
 #  |  _ \ _ __ ___   __| |_   _  ___| |_(_) ___  _ __  
@@ -37,11 +40,26 @@ CMD [ "sh", "start.sh" ]
 #  |_|   |_|  \___/ \__,_|\__,_|\___|\__|_|\___/|_| |_|
 FROM dependencies as production
 
+ARG SERVICE_NAME
+ENV SERVICE_NAME=${SERVICE_NAME}
+ARG IMAGE_NAME
+ENV IMAGE_NAME=${IMAGE_NAME}
+
 RUN mkdir -p /atavism_server/bin
+
+# Copy server files
 COPY atavism_server /atavism_server
+
+# Copy SSL file
 COPY ssl/private.key /atavism_server/bin/private.key
-COPY ./docker/images/all-in-one/start.sh start.sh
+
+# Copy environment setup script
+COPY ./docker/images/env.sh /env.sh
+RUN chmod +x env.sh
+
+# Copy start script
+COPY ./docker/images/${IMAGE_NAME}/start.sh ${SERVICE_NAME}
 RUN chmod +x start.sh
 
-CMD [ "sh", "start.sh" ]
+CMD [ "sh", "start.sh", "${SERVICE_NAME:-start}" ]
                                                      

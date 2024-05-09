@@ -3,32 +3,38 @@ name: atavism-server
 include:
   - resources.yml
 services:
-  world:
+  master:
     build:
       context: ./../..
-      dockerfile: docker/images/all-in-one/Dockerfile
+      dockerfile: docker/images/base/Dockerfile
       target: production
-    environment:
-      - ATAVISM_EMAIL=${ATAVISM_EMAIL}
-      - ATAVISM_LICENCE_KEY=${ATAVISM_LICENCE_KEY}
-      - ADMIN_DATABASE_USER=${ADMIN_DATABASE_USER}
-      - ADMIN_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
-      - MASTER_DATABASE_USER=${ADMIN_DATABASE_USER}
-      - MASTER_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
-      - WORLD_DATABASE_USER=${ADMIN_DATABASE_USER}
-      - WORLD_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
-      - ATAVISM_DATABASE_USER=${ADMIN_DATABASE_USER}
-      - ATAVISM_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      args:
+        - IMAGE_NAME=master
     ports:
-      - 5042:5042/tcp
-      - 5052:5052/udp
-      - 5566:5566/tcp
       - 9005:9005/tcp
       - 9010:9010/udp
     depends_on:
       - mysql-master
     links:
       - mysql-master
+    env_file: .env
+
+  world:
+    build:
+      context: ./../..
+      dockerfile: docker/images/base/Dockerfile
+      target: production
+      args:
+        - IMAGE_NAME=world
+    ports:
+      - 5042:5042/tcp
+      - 5052:5052/udp
+      - 5566:5566/tcp
+    depends_on:
+      - mysql-world
+    links:
+      - mysql-master
       - mysql-admin
       - mysql-atavism
       - mysql-world
+    env_file: .env

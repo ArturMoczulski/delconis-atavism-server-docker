@@ -57,7 +57,7 @@ Provides and example on how to create containers for a multi server setup.
   - [ ] Create scalable deployment solution on orstration platform
   - [ ] Create Scale Module to manage creating and destroying instances on orstration plaform
 
-# Host mapping setup
+## Dev setup
 
 1. Place your Atavism Server files in the `atavism_server` directory of the root of this repository. The `atavism_server` directory is ignored by git in this repo so pulling latest updates will not affect your server files. Your `atavism_server` directory can
    be another git repo if you store your server files in git.
@@ -83,3 +83,30 @@ openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > privat
 4. Build the containers with docker compose `docker-compose -f docker/compose/development.yml build`
 
 5. `docker-compose -f docker/compose/development.yml up -d`
+
+## Production setup
+
+1. Place your Atavism Server files in the `atavism_server` directory of the root of this repository. The `atavism_server` directory is ignored by git in this repo so pulling latest updates will not affect your server files. Your `atavism_server` directory can
+   be another git repo if you store your server files in git.
+
+2. Update the `docker/compose/.env` file with your
+
+- ATAVISM_EMAIL with your email
+- ATAVISM_KEY with your liscense key
+- Update MySQL Credentails or create override file.
+
+3. Create or provide a OpenSSH Key `private.key` to the root of this project
+
+```
+docker run -it -v ./ssl/:/key mysql /bin/sh
+cd key
+openssl genrsa -des3 -out atavism.pem 2048
+## Remember Password! it will prompt you a few times for it
+openssl rsa -in atavism.pem -outform PEM -pubout -out atavismkey.txt
+openssl rsa -in atavism.pem -out private.pem -outform PEM
+openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
+```
+
+4. Build the containers with docker compose `docker-compose -f docker/compose/production.yml build`
+
+5. `docker-compose -f docker/compose/production.yml up -d`

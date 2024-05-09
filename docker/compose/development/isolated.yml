@@ -4,9 +4,10 @@ include:
   - resources.yml
 services:
   master:
+    extends:
+      file: base.yml
+      service: atavism-master
     build:
-      context: ./../..
-      dockerfile: docker/images/base/Dockerfile
       target: development
     # Map host files to the container for ease of development
     volumes:
@@ -14,19 +15,12 @@ services:
       - ../../ssl/private.key:/atavism_server/bin/private.key
       - ../images/env.sh:/env.sh
       - ../images/master/start.sh:/start.sh
-    ports:
-      - 9005:9005/tcp
-      - 9010:9010/udp
-    depends_on:
-      - mysql-master
-    links:
-      - mysql-master
-    env_file: .env
 
   world:
+    extends:
+      file: base.yml
+      service: atavism-module
     build:
-      context: ./../..
-      dockerfile: docker/images/base/Dockerfile
       target: development
     # Map host files to the container for ease of development
     volumes:
@@ -34,15 +28,3 @@ services:
       - ../../ssl/private.key:/atavism_server/bin/private.key
       - ../images/env.sh:/env.sh
       - ../images/world/start.sh:/start.sh
-    ports:
-      - 5042:5042/tcp
-      - 5052:5052/udp
-      - 5566:5566/tcp
-    depends_on:
-      - mysql-world
-    links:
-      - mysql-master
-      - mysql-admin
-      - mysql-atavism
-      - mysql-world
-    env_file: .env

@@ -9,7 +9,7 @@ services:
       - MYSQL_DATABASE=master
     volumes:
       - master-data:/var/lib/mysql
-      - ./../../atavism_server/sql/New_Install_with_Demo_Data/master.sql:/docker-entrypoint-initdb.d/master.sql
+      - ./../../../atavism_server/sql/New_Install_with_Demo_Data/master.sql:/docker-entrypoint-initdb.d/master.sql
   mysql-admin:
     image: mysql:8.2
     environment:
@@ -19,7 +19,7 @@ services:
       - MYSQL_DATABASE=admin
     volumes:
       - admin-data:/var/lib/mysql
-      - ./../../atavism_server/sql/New_Install_with_Demo_Data/admin.sql:/docker-entrypoint-initdb.d/admin.sql
+      - ./../../../atavism_server/sql/New_Install_with_Demo_Data/admin.sql:/docker-entrypoint-initdb.d/admin.sql
   mysql-atavism:
     image: mysql:8.2
     environment:
@@ -29,7 +29,7 @@ services:
       - MYSQL_DATABASE=atavism
     volumes:
       - atavism-data:/var/lib/mysql
-      - ./../../atavism_server/sql/New_Install_with_Demo_Data/atavism.sql:/docker-entrypoint-initdb.d/atavism.sql
+      - ./../../../atavism_server/sql/New_Install_with_Demo_Data/atavism.sql:/docker-entrypoint-initdb.d/atavism.sql
   mysql-world:
     image: mysql:8.2
     environment:
@@ -39,7 +39,7 @@ services:
       - MYSQL_DATABASE=world_content
     volumes:
       - world-data:/var/lib/mysql
-      - ./../../atavism_server/sql/New_Install_with_Demo_Data/world_content.sql:/docker-entrypoint-initdb.d/world_content.sql
+      - ./../../../atavism_server/sql/New_Install_with_Demo_Data/world_content.sql:/docker-entrypoint-initdb.d/world_content.sql
 volumes:
   admin-data:
     driver: local

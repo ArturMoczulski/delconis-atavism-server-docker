@@ -1,0 +1,16 @@
+version: "3"
+name: atavism-server
+services:
+  master:
+    extends:
+      file: ../common/base.yml
+      service: atavism-master
+    build:
+      target: development
+    # Map host files to the container for ease of development
+    volumes:
+      - ../../../atavism_server:/atavism_server
+      - ../../../ssl/private.key:/atavism_server/bin/private.key
+      - ../../images/env.sh:/env.sh
+      - ../../images/master/start.sh:/start.sh
+    env_file: .env

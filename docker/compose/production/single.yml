@@ -1,0 +1,15 @@
+version: "3"
+name: atavism-server
+include:
+  - ../common/resources.yml
+  - master.yml
+services:
+  world:
+    extends:
+      file: ../common/base.yml
+      service: atavism-module
+    build:
+      target: production
+      args:
+        - IMAGE_NAME=world
+    env_file: .env

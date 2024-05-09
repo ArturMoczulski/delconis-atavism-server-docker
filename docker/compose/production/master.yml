@@ -1,0 +1,12 @@
+version: "3"
+name: atavism-server
+services:
+  master:
+    extends:
+      file: ../common/base.yml
+      service: atavism-master
+    build:
+      target: production
+      args:
+        - IMAGE_NAME=master
+    env_file: .env

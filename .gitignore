@@ -3,3 +3,5 @@
 *.env
 *.zip
 atavismkey.txt
+atavism_server/
+ssl/

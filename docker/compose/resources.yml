@@ -1,0 +1,54 @@
+version: "3"
+services:
+  mysql-master:
+    image: mysql:8.2
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MASTER_MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MASTER_DATABASE_USER}
+      - MYSQL_PASSWORD=${MASTER_DATABASE_PASSWORD}
+      - MYSQL_DATABASE=master
+    volumes:
+      - master-data:/var/lib/mysql
+      - ../../atavism_server/sql/New_Install_with_Demo_Data/:/docker-entrypoint-initdb.d/master.sql
+  mysql-admin:
+    image: mysql:8.2
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ADMIN_MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${ADMIN_DATABASE_USER}
+      - MYSQL_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - MYSQL_DATABASE=admin
+    volumes:
+      - admin-data:/var/lib/mysql
+      - ../../atavism_server/sql/New_Install_with_Demo_Data/:/docker-entrypoint-initdb.d/admin.sql
+  mysql-atavism:
+    image: mysql:8.2
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ATAVISM_MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${ATAVISM_DATABASE_USER}
+      - MYSQL_PASSWORD=${ATAVISM_DATABASE_PASSWORD}
+      - MYSQL_DATABASE=atavism
+    volumes:
+      - atavism-data:/var/lib/mysql
+      - ../../atavism_server/sql/New_Install_with_Demo_Data/:/docker-entrypoint-initdb.d/atavism.sql
+  mysql-world:
+    image: mysql:8.2
+    environment:
+      - MYSQL_ROOT_PASSWORD=${WORLD_MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${WORLD_DATABASE_USER}
+      - MYSQL_PASSWORD=${WORLD_DATABASE_PASSWORD}
+      - MYSQL_DATABASE=world_content
+    volumes:
+      - world-data:/var/lib/mysql
+      - ../../atavism_server/sql/New_Install_with_Demo_Data/:/docker-entrypoint-initdb.d/world_content.sql
+volumes:
+  admin-data:
+    driver: local
+  atavism-data:
+    driver: local
+  master-data:
+    driver: local
+  world-data:
+    driver: local
+networks:
+  backend:
+    driver: bridge

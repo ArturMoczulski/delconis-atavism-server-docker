@@ -1,0 +1,35 @@
+version: "3"
+include:
+  - resources.yml
+services:
+  world:
+    build:
+      context: .
+      dockerfile: ../images/all-in-one/Dockerfile
+    volumes:
+      - ../../atavism_server:/atavism_server
+      - ../images/all-in-one/start.sh:./start.sh
+    environment:
+      - ATAVISM_EMAIL=${ATAVISM_EMAIL}
+      - ATAVISM_LICENCE_KEY=${ATAVISM_LICENCE_KEY}
+      - ADMIN_DATABASE_USER=${ADMIN_DATABASE_USER}
+      - ADMIN_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - MASTER_DATABASE_USER=${ADMIN_DATABASE_USER}
+      - MASTER_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - WORLD_DATABASE_USER=${ADMIN_DATABASE_USER}
+      - WORLD_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+      - ATAVISM_DATABASE_USER=${ADMIN_DATABASE_USER}
+      - ATAVISM_DATABASE_PASSWORD=${ADMIN_DATABASE_PASSWORD}
+    ports:
+      - 5042:5042/tcp
+      - 5052:5052/udp
+      - 5566:5566/tcp
+      - 9005:9005/tcp
+      - 9010:9010/udp
+    depends_on:
+      - mysql-master
+    links:
+      - mysql-master
+      - mysql-admin
+      - mysql-atavism
+      - mysql-world

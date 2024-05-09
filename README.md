@@ -81,3 +81,5 @@ openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > privat
 ```
 
 4. Build the containers with docker compose `docker-compose -f docker/compose/development.yml build`
+
+5. `docker-compose -f docker/compose/development.yml up -d`

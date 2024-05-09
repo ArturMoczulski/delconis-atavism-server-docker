@@ -1,4 +1,5 @@
 version: "3"
+name: atavism-server
 include:
   - resources.yml
 services:
@@ -8,7 +9,8 @@ services:
       dockerfile: ../images/all-in-one/Dockerfile
     volumes:
       - ../../atavism_server:/atavism_server
-      - ../images/all-in-one/start.sh:./start.sh
+      - ../../ssl/private.key:/atavism_server/bin/private.key
+      - ../images/all-in-one/start.sh:/start.sh
     environment:
       - ATAVISM_EMAIL=${ATAVISM_EMAIL}
       - ATAVISM_LICENCE_KEY=${ATAVISM_LICENCE_KEY}

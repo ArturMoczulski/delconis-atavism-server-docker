@@ -4,4 +4,4 @@
 *.zip
 atavismkey.txt
 atavism_server/
-ssl/
+ssl/*

@@ -13,11 +13,13 @@ Provides and example on how to create containers for a multi server setup.
 
 1. Download the atavism_server.zip to the root of this project `atavism_server_10_9_0_20231229_1523.zip`. If you have your Atavism Server in a git repo you can also just clone it to the root as `atavism_server` directory. `atavism_server` directory is ignored in this repo's `.gitignore` to make updates easy.
 
-2. Update the `docker/compose/.env` file with your
+2. Update the `docker/compose/development/.env` and `docker/compose/production/.env` file with your
 
 - ATAVISM_EMAIL with your email
 - ATAVISM_KEY with your liscense key
 - Update MySQL Credentails or create override file.
+
+There are example templates provided in the same directory `env.example`
 
 3. Create or provide a OpenSSH Key `private.key` to the root of this project
 
@@ -33,15 +35,15 @@ openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > privat
 
 #### For development setup
 
-4. Build the containers with docker compose `docker-compose -f docker/compose/development.yml build`
-5. Run `docker-compose -f docker/compose/development.yml up -d`
+4. Build the containers with docker compose `docker-compose -f docker/compose/development/single.yml build`
+5. Run `docker-compose -f docker/compose/development/single.yml up -d`
 
-_Note:_ Currently the `world` service does not have a docker healthcheck implemented, so it tends to fail connect to the database at first start. It's recommended to restart the `world` service after a couple of seconds so it reattempts to connect to mysql once it's accepting connections.
+_Note:_ Currently the services do not have a docker healthcheck implemented, so they tend to fail connect to the database at first start. It's recommended to restart the `world` and `master` service after a couple of seconds so it reattempts to connect to mysql once it's accepting connections.
 
 #### For production setup
 
-4. Build the containers with docker compose `docker-compose -f docker/compose/production.yml build`
-5. Run `docker-compose -f docker/compose/production.yml up -d`
+4. Build the containers with docker compose `docker-compose -f docker/compose/production/single.yml build`
+5. Run `docker-compose -f docker/compose/production/single.yml up -d`
 
 #### Unity client
 

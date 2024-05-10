@@ -82,6 +82,8 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 
 2. Unzip your AGIS source files to `src/lib`. The full path should be `src/lib/atavism/agis`.
 
+3. Install VS code extension [Trigger Task on Save](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.triggertaskonsave) to enable auto building and deployment of `agis.jar` to the Atavism Server on saving `*.java` and `*.gradle` files.
+
 #### Structure
 
 `src/lib`: contains dependency packages for your source code. Mostly, AGIS. Those are referenced during JAR gradle builds.

@@ -2,9 +2,9 @@
   "java.configuration.updateBuildConfiguration": "automatic",
   "triggerTaskOnSave.tasks": {
     "build": [
-      "src/main/**/*.java", // <-- Glob pattern to specify which files should trigger the task
+      "src/**/*.java", // <-- Glob pattern to specify which files should trigger the task
       "settings.gradle",
       "build.gradle"
-    ],
+    ]
   }
 }

@@ -7,7 +7,9 @@ atavism_server
 ssl/*
 **/.DS_Store
 
+# Gradle
 **/.gradle
+build
 
 # Source
 src/*

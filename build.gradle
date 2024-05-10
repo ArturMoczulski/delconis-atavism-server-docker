@@ -1,0 +1,89 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.3'
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.9.2'
+    implementation 'org.recast4j:recast:1.5.5'
+    implementation 'org.recast4j:detour:1.5.5'
+    implementation 'org.recast4j:detour-crowd:1.5.5'
+    implementation 'org.recast4j:detour-dynamic:1.5.5'
+    implementation 'org.recast4j:detour-extras:1.5.5'
+    implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'com.google.code.gson:gson:2.9.1'
+
+    // JUnit Jupiter API and Engine for testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    // Use JUnit Jupiter BOM for consistent versioning
+    testImplementation platform('org.junit:junit-bom:5.7.0')
+
+    //local file
+    implementation files('/Users/arturmoczulski/Projects/atavism-server-docker/atavism_server/dist/lib/atavism.jar')
+
+}
+
+sourceSets {
+    main {
+        java {
+            // Include all the plugins
+            file('src/plugins').listFiles().each { File file ->
+                if (file.isDirectory()) {
+                    def pluginSrcDir = "${file.path}/src"
+                    if (new File(pluginSrcDir).exists()) {
+                        srcDirs += pluginSrcDir
+                    }
+                }
+            }
+
+            // Include the dependency Java files in 'lib'
+            // This is where AGIS sources should live
+            srcDir 'src/lib'
+
+            // Include any other specific directory as needed
+            include '**/*.java'
+            exclude '**/*Test.java'
+        }
+    }
+}
+
+jar {
+    archiveFileName = 'agis.jar'
+
+    // Assumes server dist files location
+    destinationDirectory = file("$rootDir/atavism_server/dist/lib")
+
+    // Exclude specific files that are known to cause duplicate issues
+    exclude 'META-INF/LICENSE', 'META-INF/LICENSE.txt'
+
+    // Alternatively, exclude all files in META-INF directory
+    exclude 'META-INF/**'
+
+    from sourceSets.main.output
+    exclude '**/*Test.class'  // This excludes any compiled test classes
+
+    // Generating and configuring the manifest
+    manifest {
+        attributes(
+            'Manifest-Version': '1.0',
+            'Main-Class': 'atavism.agis.server.AllInOneServer'
+        )
+    }
+
+    // Ensuring the JAR task is built after compiling the sources
+    dependsOn configurations.runtimeClasspath
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
+}

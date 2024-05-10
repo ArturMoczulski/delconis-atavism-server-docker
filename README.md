@@ -73,3 +73,55 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
     - [ ] Export Prefabs/Nav mesh to server
   - [ ] Create scalable deployment solution on orstration platform
   - [ ] Create Scale Module to manage creating and destroying instances on orstration plaform
+
+### VS Code + Gradle workflow
+
+#### Setup
+
+1. Make sure the Atavism Server is in `atavism_server` directory. It can be plain files, a Git repo or a symlink.
+
+2. Unzip your AGIS source files to `src/lib`. The full path should be `src/lib/atavism/agis`.
+
+#### Structure
+
+`src/lib`: contains dependency packages for your source code. Mostly, AGIS. Those are referenced during JAR gradle builds.
+
+`src/examples`: contains templates for quick starting new projects
+
+`src/plugins`: this is where your plugins source code lives, i.e. `src/plugins/MyNewPlugin`
+
+#### Adding a new plugin to All in one
+
+1. In `ServerStart` add a plugin start method to register your plugin:
+
+```java
+public static void startMyNewPlugin() {;
+    Engine.registerPlugin("atavism.agis.plugins.MyNewPlugin");
+}
+```
+
+2. In `AllInOne::postScript` invoke your plugin registration:
+
+```java
+private static void postScript() {
+    ...
+    // My New Plugin
+    startMyNewPlugin();
+}
+```
+
+3. In `AllIneOne::main` add your plugin's camelcased name to the list of registered plugins:
+
+```java
+AdvertisementFileMerger.merge(..., "your_new_plugin");
+```
+
+4. In `MessageInitializer::init` add all your plugins new messages:
+
+```java
+public static void init() {
+    ...
+    // Real Health Plugin
+    aoMessageCatalog.addMsgTypeTranslation(MyNewPluginClient.MSG_TYPE_MY_NEW_MESSAGE);
+}
+```

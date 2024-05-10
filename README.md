@@ -11,8 +11,7 @@ Provides and example on how to create containers for a multi server setup.
   - 2-4GB of ram for Docker Engine (Untested at any load, 866mb on init)
 - [Atavism](https://atavismonline.com/) Subscription
 - Atavism Server Download
-- Java Runtime
-- Gradle
+- [Gradle](https://gradle.org/)
 - [Visual Studio Code](https://code.visualstudio.com/)
 - Visual Studio Code extensions:
   - [Language Support for Java(TM) by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.java)

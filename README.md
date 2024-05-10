@@ -12,6 +12,7 @@ Provides and example on how to create containers for a multi server setup.
 - [Atavism](https://atavismonline.com/) Subscription
 - Atavism Server Download
 - [Gradle](https://gradle.org/)
+- [Java Development Kit 8](https://adoptium.net/temurin/releases/?version=8)
 - [Visual Studio Code](https://code.visualstudio.com/)
 - Visual Studio Code extensions:
   - [Language Support for Java(TM) by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.java)
@@ -94,6 +95,8 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 3. Install VS code extension [Trigger Task on Save](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.triggertaskonsave) to enable auto building and deployment of `agis.jar` to the Atavism Server on saving `*.java` and `*.gradle` files.
 
 4. Install [Gradle](https://gradle.org/install/)
+
+5. Set up the path to your JDK8 Runtime for VS Code in `.vscode/settings.js`. This will provide you with Java language server support while coding compliant with the AGIS server compatible Java version.
 
 #### Commands
 

@@ -90,7 +90,7 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 
 - Development:Build tasks
 
-  - `gradle dev.reload` - Builds agis.jar, deploys it and restarts the Atavism Server process in the world container
+  - `gradle dev.reload` - Builds agis.jar, deploys it and restarts the Atavism Server process in the world container. Triggered automatically in VS code on save of any \*.java files in your `src/` directory.
 
 - Development:Docker tasks
   - `gradle dev.up` - Starts Docker containers for development

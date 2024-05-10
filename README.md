@@ -4,10 +4,18 @@ Provides and example on how to create containers for a multi server setup.
 
 ### Pre-Requsists
 
-- Docker
-- Atavism Subscription
-- Atavism Server Download
+- [Docker Engine](https://www.docker.com/)
+  - Recommended one of the following Docker Engine UI's:
+    - [OrbStack](https://orbstack.dev/)
+    - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - 2-4GB of ram for Docker Engine (Untested at any load, 866mb on init)
+- [Atavism](https://atavismonline.com/) Subscription
+- Atavism Server Download
+- [Visual Studio Code](https://code.visualstudio.com/)
+- Visual Studio Code extensions:
+  - [Language Support for Java(TM) by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.java)
+  - [Trigger Task on Save](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.triggertaskonsave)
+  - [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack)
 
 ### Getting started
 

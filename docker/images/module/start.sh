@@ -38,4 +38,4 @@ sleep 5
 #              |___/     
 figlet -c "Logs"
 
-tail -f -n 1000 /atavism_server/logs/world/$ATAVISM_MODULE_NAME*.log
+tail -F -n 1000 /atavism_server/logs/world/$ATAVISM_MODULE_NAME*.log

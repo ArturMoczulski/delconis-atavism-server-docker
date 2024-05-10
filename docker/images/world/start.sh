@@ -34,4 +34,4 @@ sleep 5
 #              |___/     
 figlet -c "Logs"
 
-tail -f /atavism_server/logs/world/*.log
+tail -F /atavism_server/logs/world/*.log

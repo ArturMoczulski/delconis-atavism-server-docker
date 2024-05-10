@@ -114,13 +114,27 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 
 #### Structure
 
-`src/lib`: contains dependency packages for your source code. Mostly, AGIS. Those are referenced during JAR gradle builds.
+- `.gradle`: temporary gradle working directory. Don't modify and don't commit.
 
-`src/examples`: contains templates for quick starting new projects
+- `.vscode`: Visual Studio code settings. Includes automations, task triggers, etc.
 
-`src/plugins`: this is where your plugins source code lives, i.e. `src/plugins/MyNewPlugin`
+- `atavism_server`: your original unzipped Atavism Server copy
 
-`src/build`: gradle tasks build utilties
+- `build`: temporary gradle working directory. Don't modify.
+
+- `buildSrc`: gradle build files used for this repo. Used for gradle build tasks, code generation, reload triggers, etc.
+
+- `docker`: docker compose setup for containerization
+
+- `src`: your server code. This is the main directory for your work.
+
+  - `src/lib`: contains dependency packages for your source code. Mostly, AGIS. Those are referenced during JAR gradle builds. You should unzip your AGIS archive here.
+
+  - `src/examples`: contains templates for quick starting new projects
+
+  - `src/plugins`: this is where your plugins source code lives, i.e. `src/plugins/MyNewPlugin`
+
+- `ssl`: store your SSL keys here
 
 #### Adding a new plugin to All in one
 

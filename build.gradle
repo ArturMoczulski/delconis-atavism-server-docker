@@ -120,7 +120,7 @@ task ('dev.reload') {
     doLast {
         exec {
             workingDir "."
-            commandLine "$rootDir/src/build/docker-single-reload.sh"
+            commandLine "$rootDir/buildSrc/docker-single-reload.sh"
         }
     }
 }

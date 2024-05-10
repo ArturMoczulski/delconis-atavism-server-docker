@@ -6,14 +6,11 @@ include:
 services:
   world:
     extends:
-      file: ../common/base.yml
-      service: atavism-module
-    build:
-      target: development
-    # Map host files to the container for ease of development
+      file: module.yml
+      service: atavism-module-development
     volumes:
-      - ../../../atavism_server:/atavism_server
-      - ../../../ssl/private.key:/atavism_server/bin/private.key
-      - ../../images/env.sh:/env.sh
       - ../../images/world/start.sh:/start.sh
-    env_file: .env
+    ports:
+      - 5042:5042/tcp
+      - 5052:5052/udp
+      - 5566:5566/tcp

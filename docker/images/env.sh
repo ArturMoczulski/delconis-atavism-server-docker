@@ -23,6 +23,7 @@ sed -i 's/atavism.licence.email.*/atavism.licence.email='"$ATAVISM_EMAIL"'/' /at
 sed -i 's/atavism.licence.key.*/atavism.licence.key='"$ATAVISM_LICENCE_KEY"'/' /atavism_server/bin/world.properties
 sed -i 's/atavism.login.bindaddress.*/atavism.login.bindaddress='"localhost"'/' /atavism_server/bin/world.properties
 sed -i 's/atavism.proxy.bindaddress.*/atavism.proxy.bindaddress='"localhost"'/' /atavism_server/bin/world.properties
+sed -i 's/atavism.msgsvr_hostname.*/atavism.msgsvr_hostname='"localhost"'/' /atavism_server/bin/world.properties
 sed -i 's/atavism.proxy.externaladdress.*/atavism.proxy.externaladdress='"localhost"'/' /atavism_server/bin/world.properties
 
 ## Atavism DB

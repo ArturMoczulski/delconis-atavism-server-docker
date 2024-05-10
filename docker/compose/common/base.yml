@@ -4,12 +4,8 @@ services:
   atavism-module:
     build:
       context: ./../../..
-      dockerfile: docker/images/base/Dockerfile
+      dockerfile: ./../../images/base/Dockerfile
       target: production
-    ports:
-      - 5042:5042/tcp
-      - 5052:5052/udp
-      - 5566:5566/tcp
     depends_on:
       - mysql-master
       - mysql-admin

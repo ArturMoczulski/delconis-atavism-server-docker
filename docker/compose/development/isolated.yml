@@ -1,30 +1,323 @@
 version: "3"
 name: atavism-server
 include:
-  - resources.yml
+  - ../common/resources.yml
+  - master.yml
 services:
-  master:
+  domain:
     extends:
-      file: base.yml
-      service: atavism-master
+      file: module.yml
+      service: atavism-module-development
     build:
-      target: development
-    # Map host files to the container for ease of development
-    volumes:
-      - ../../atavism_server:/atavism_server
-      - ../../ssl/private.key:/atavism_server/bin/private.key
-      - ../images/env.sh:/env.sh
-      - ../images/master/start.sh:/start.sh
+      args:
+        - ATAVISM_MODULE_NAME=domain
+    environment:
+      - ATAVISM_MODULE_NAME=domain
 
-  world:
+  proxy:
     extends:
-      file: base.yml
-      service: atavism-module
+      file: module.yml
+      service: atavism-module-development
     build:
-      target: development
-    # Map host files to the container for ease of development
-    volumes:
-      - ../../atavism_server:/atavism_server
-      - ../../ssl/private.key:/atavism_server/bin/private.key
-      - ../images/env.sh:/env.sh
-      - ../images/world/start.sh:/start.sh
+      args:
+        - ATAVISM_MODULE_NAME=proxy
+    environment:
+      - ATAVISM_MODULE_NAME=proxy
+    depends_on:
+      domain:
+        condition: service_started
+    links:
+      - domain
+
+  world-manager:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=wmgr
+    environment:
+      - ATAVISM_MODULE_NAME=wmgr
+    depends_on:
+      domain:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - combat
+
+  combat:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=combat
+    environment:
+      - ATAVISM_MODULE_NAME=combat
+    depends_on:
+      domain:
+        condition: service_started
+      faction:
+        condition: service_started
+    links:
+      - domain
+      - faction
+
+  instance:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=combat
+    environment:
+      - ATAVISM_MODULE_NAME=combat
+    depends_on:
+      domain:
+        condition: service_started
+    links:
+      - domain
+
+  login:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=login
+    environment:
+      - ATAVISM_MODULE_NAME=login
+    depends_on:
+      domain:
+        condition: service_started
+      object-manager:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - object-manager
+      - combat
+
+  object-manager:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=objmgr
+    environment:
+      - ATAVISM_MODULE_NAME=objmgr
+    depends_on:
+      domain:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - combat
+
+  mob:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=mob
+    environment:
+      - ATAVISM_MODULE_NAME=mob
+    depends_on:
+      domain:
+        condition: service_started
+      object-manager:
+        condition: service_started
+      world-manager:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - object-manager
+      - world-manager
+      - combat
+
+  arena:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=arena
+    environment:
+      - ATAVISM_MODULE_NAME=arena
+    depends_on:
+      domain:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - combat
+
+  builder:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=builder
+    environment:
+      - ATAVISM_MODULE_NAME=builder
+    depends_on:
+      domain:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - combat
+
+  auction:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=auction
+    environment:
+      - ATAVISM_MODULE_NAME=auction
+    depends_on:
+      domain:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - combat
+
+  weather:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=weather
+    environment:
+      - ATAVISM_MODULE_NAME=weather
+    depends_on:
+      domain:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - combat
+
+  faction:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=faction
+    environment:
+      - ATAVISM_MODULE_NAME=faction
+    depends_on:
+      domain:
+        condition: service_started
+    links:
+      - domain
+
+  chat:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=chat
+    environment:
+      - ATAVISM_MODULE_NAME=chat
+    depends_on:
+      domain:
+        condition: service_started
+      proxy:
+        condition: service_started
+      combat:
+        condition: service_started
+    links:
+      - domain
+      - proxy
+      - combat
+
+  quest:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=quest
+    environment:
+      - ATAVISM_MODULE_NAME=quest
+    depends_on:
+      domain:
+        condition: service_started
+      combat:
+        condition: service_started
+      mob:
+        condition: service_started
+      prefab:
+        condition: service_started
+      builder:
+        condition: service_started
+      login:
+        condition: service_started
+      faction:
+        condition: service_started
+      arena:
+        condition: service_started
+      chat:
+        condition: service_started
+      weather:
+        condition: service_started
+      auction:
+        condition: service_started
+    links:
+      - domain
+      - combat
+      - mob
+      - prefab
+      - builder
+      - login
+      - faction
+      - arena
+      - chat
+      - weather
+      - auction
+
+  prefab:
+    extends:
+      file: module.yml
+      service: atavism-module-development
+    build:
+      args:
+        - ATAVISM_MODULE_NAME=prefab
+    environment:
+      - ATAVISM_MODULE_NAME=prefab
+    depends_on:
+      domain:
+        condition: service_started
+      combat:
+        condition: service_started
+      proxy:
+        condition: service_started
+      weather:
+        condition: service_started
+    links:
+      - domain
+      - proxy
+      - weather
+      - combat
+    ports:
+      - 5566:5566

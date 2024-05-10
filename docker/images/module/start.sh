@@ -5,20 +5,37 @@
 #  |_____|_| |_|\_/ |_|_|  \___/|_| |_|_| |_| |_|\___|_| |_|\__|
                                                               
 . /env.sh
+. /module_env.sh
 
-#   ____  _             _                         _          
-#  / ___|| |_ __ _ _ __| |_   ___  ___ _ ____   _(_) ___ ___ 
-#  \___ \| __/ _` | '__| __| / __|/ _ \ '__\ \ / / |/ __/ _ \
-#   ___) | || (_| | |  | |_  \__ \  __/ |   \ V /| | (_|  __/
-#  |____/ \__\__,_|_|   \__| |___/\___|_|    \_/ |_|\___\___|
+#   ____  _             _                         _       _      
+#  / ___|| |_ __ _ _ __| |_   _ __ ___   ___   __| |_   _| | ___ 
+#  \___ \| __/ _` | '__| __| | '_ ` _ \ / _ \ / _` | | | | |/ _ \
+#   ___) | || (_| | |  | |_  | | | | | | (_) | (_| | |_| | |  __/
+#  |____/ \__\__,_|_|   \__| |_| |_| |_|\___/ \__,_|\__,_|_|\___|
+                                                               
+# Capture the first command-line argument
+ATAVISM_MODULE_NAME=$1
+
+# Check if the module name was provided
+if [ -z "$ATAVISM_MODULE_NAME" ]; then
+    echo "Error: No module name provided."
+    echo "Usage: $0 <module_name>"
+    exit 1  # Exit the script with an error code
+fi
                                                   
-figlet -c "Start $1"
+# Use figlet to display the module name
+figlet -c "Start $ATAVISM_MODULE_NAME"
 
-cd /atavism_server/bin/ && ./world.sh -vC $1
+cd /atavism_server/bin/ && ./world.sh -vC $ATAVISM_MODULE_NAME 1
 
-while /atavism_server/bin/world.sh -vC status | grep -q "RUNNING"; do
-    sleep 5
-done
+sleep 5
 
-# Print logs at exit
-cat logs /atavism_server/world/$1.log
+#   _                    
+#  | |    ___   __ _ ___ 
+#  | |   / _ \ / _` / __|
+#  | |__| (_) | (_| \__ \
+#  |_____\___/ \__, |___/
+#              |___/     
+figlet -c "Logs"
+
+tail -f -n 1000 /atavism_server/logs/world/$ATAVISM_MODULE_NAME*.log

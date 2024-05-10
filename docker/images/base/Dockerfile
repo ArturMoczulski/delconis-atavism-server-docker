@@ -40,6 +40,9 @@ CMD sh start.sh ${ATAVISM_MODULE_NAME:-server}
 #  |_|   |_|  \___/ \__,_|\__,_|\___|\__|_|\___/|_| |_|
 FROM dependencies as production
 
+RUN mkdir -p /tmp/build
+COPY . /tmp/build
+
 ARG ATAVISM_MODULE_NAME
 ENV ATAVISM_MODULE_NAME=${ATAVISM_MODULE_NAME}
 ARG IMAGE_NAME
@@ -58,8 +61,8 @@ COPY ./docker/images/env.sh /env.sh
 RUN chmod +x env.sh
 
 # Copy start script
-COPY ./docker/images/${IMAGE_NAME:-world}/start.sh ${ATAVISM_MODULE_NAME:-server}
+COPY ./docker/images/${IMAGE_NAME:-world}/start.sh start.sh
 RUN chmod +x start.sh
 
-CMD sh start.sh ${ATAVISM_MODULE_NAME}
+CMD sh start.sh ${ATAVISM_MODULE_NAME:-server}
                                                      

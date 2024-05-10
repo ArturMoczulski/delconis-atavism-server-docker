@@ -1,5 +1,5 @@
 version: "3"
-name: atavism-server
+name: atavism-server-development
 include:
   - ../common/resources.yml
   - master.yml

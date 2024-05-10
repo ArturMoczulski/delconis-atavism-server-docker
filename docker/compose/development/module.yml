@@ -10,6 +10,8 @@ services:
       service: atavism-module
     build:
       target: development
+      context: ./../../..
+      dockerfile: docker/images/base/Dockerfile
     # Map host files to the container for ease of development
     volumes:
       - ../../../atavism_server:/atavism_server

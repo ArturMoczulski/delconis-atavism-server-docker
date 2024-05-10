@@ -4,7 +4,7 @@ services:
   atavism-module:
     build:
       context: ./../../..
-      dockerfile: ./../../images/base/Dockerfile
+      dockerfile: docker/images/base/Dockerfile
       target: production
     depends_on:
       - mysql-master

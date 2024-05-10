@@ -1,0 +1,11 @@
+version: "3"
+name: atavism-server
+include:
+  - ../common/resources.yml
+  - master.yml
+services:
+  atavism-module-production:
+    extends:
+      file: ../common/base.yml
+      service: atavism-module
+    env_file: .env

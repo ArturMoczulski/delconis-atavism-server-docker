@@ -7,6 +7,4 @@ services:
       service: atavism-master
     build:
       target: production
-      args:
-        - IMAGE_NAME=master
     env_file: .env

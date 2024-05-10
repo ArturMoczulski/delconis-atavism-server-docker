@@ -5,14 +5,17 @@
 atavismkey.txt
 atavism_server
 ssl/*
+**/.DS_Store
 
 **/.gradle
 
 # Source
 src/*
-!src/plugins
-src/plugins/*
 
-# Source dependencies
-!src/lib
+!src/plugins/
+!src/lib/
+!src/examples/
+
+# Ignore everything inside src/plugins and src/lib directories
+src/plugins/*
 src/lib/*

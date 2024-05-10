@@ -86,6 +86,18 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 
 4. Install [Gradle](https://gradle.org/install/)
 
+#### Commands
+
+- Development:Build tasks
+
+  - `gradle dev.reload` - Builds agis.jar, deploys it and restarts the Atavism Server process in the world container
+
+- Development:Docker tasks
+  - `gradle dev.up` - Starts Docker containers for development
+  - `gradle dev.down` - Stops Docker containers for development
+  - `gradle dev.logs` - Display logs for the dev containers
+  - `gradle dev.restart` - Restarts Docker containers for development
+
 #### Structure
 
 `src/lib`: contains dependency packages for your source code. Mostly, AGIS. Those are referenced during JAR gradle builds.

@@ -112,7 +112,7 @@ build {
 //                               |_|                             
 
 task ('dev.reload') {
-    description "Deploys agis.jar and restarts docker containers"
+    description "Builds agis.jar, deploys it and restarts the Atavism Server process in the world container"
     group = 'Development:Build'
 
     dependsOn build
@@ -150,7 +150,7 @@ task 'dev.restart' {
 }
 
 task 'dev.logs' {
-    description "Display logs for the containers"
+    description "Display logs for the dev containers"
     group = 'Development:Docker'
     doFirst {
         dockerCompose('logs', "docker/compose/development/single.yml", ["-f"])

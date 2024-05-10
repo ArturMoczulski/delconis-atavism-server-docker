@@ -8,7 +8,7 @@ Provides and example on how to create containers for a multi server setup.
   - Recommended one of the following Docker Engine UI's:
     - [OrbStack](https://orbstack.dev/)
     - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- 2-4GB of ram for Docker Engine (Untested at any load, 866mb on init)
+  - 2-4GB of ram for Docker Engine (Untested at any load, 866mb on init)
 - [Atavism](https://atavismonline.com/) Subscription
 - Atavism Server Download
 - [Visual Studio Code](https://code.visualstudio.com/)

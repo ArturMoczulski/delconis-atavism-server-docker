@@ -98,7 +98,7 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 
 5. Set up the path to your JDK8 Runtime for VS Code in `.vscode/settings.js`. This will provide you with Java language server support while coding compliant with the AGIS server compatible Java version.
 
-6. If VS Code is not providing Java autocompletions and suggestions, reload your Java Language Server and Java Project workspace in VS Code: `Cmd + P` --> _Java: Restart Java Language Server_ and then `Cmd + P` --> _Java: Clean Java Language Server Workspace_.
+6. If VS Code is not providing Java autocompletions and suggestions, reload your Java Language Server and Java Project workspace in VS Code: `Cmd/Ctrl + ,` --> _Java: Restart Java Language Server_ and then `Cmd/Ctrl + ,` --> _Java: Clean Java Language Server Workspace_.
 
 #### Commands
 

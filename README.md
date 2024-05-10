@@ -92,6 +92,8 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 
 `src/plugins`: this is where your plugins source code lives, i.e. `src/plugins/MyNewPlugin`
 
+`src/build`: gradle tasks build utilties
+
 #### Adding a new plugin to All in one
 
 1. In `ServerStart` add a plugin start method to register your plugin:

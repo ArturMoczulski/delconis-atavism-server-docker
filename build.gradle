@@ -1,8 +1,18 @@
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
+
 plugins {
     id 'java'
 }
 
 sourceCompatibility = 1.8
+
+//   ____                            _                 _           
+//  |  _ \  ___ _ __   ___ _ __   __| | ___ _ __   ___(_) ___  ___ 
+//  | | | |/ _ \ '_ \ / _ \ '_ \ / _` |/ _ \ '_ \ / __| |/ _ \/ __|
+//  | |_| |  __/ |_) |  __/ | | | (_| |  __/ | | | (__| |  __/\__ \
+//  |____/ \___| .__/ \___|_| |_|\__,_|\___|_| |_|\___|_|\___||___/
+//             |_|                                                 
 
 repositories {
     mavenCentral()
@@ -29,6 +39,12 @@ dependencies {
     implementation files('/Users/arturmoczulski/Projects/atavism-server-docker/atavism_server/dist/lib/atavism.jar')
 
 }
+
+//   ____        _ _     _ 
+//  | __ ) _   _(_) | __| |
+//  |  _ \| | | | | |/ _` |
+//  | |_) | |_| | | | (_| |
+//  |____/ \__,_|_|_|\__,_|
 
 sourceSets {
     main {
@@ -88,16 +104,74 @@ build {
     dependsOn jar
 }
 
-task reload {
+//   ____                 _                                  _   
+//  |  _ \  _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_ 
+//  | | | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __|
+//  | |_| |  __/\ V /  __/ | (_) | |_) | | | | | |  __/ | | | |_ 
+//  |____/ \___| \_/ \___|_|\___/| .__/|_| |_| |_|\___|_| |_|\__|
+//                               |_|                             
+
+task ('dev.reload') {
     description "Deploys agis.jar and restarts docker containers"
+    group = 'Development:Build'
+
     dependsOn build
 
-    exec {
-        workingDir "."
-        commandLine "$rootDir/docker/compose/reload.sh"
+    doLast {
+        exec {
+            workingDir "."
+            commandLine "$rootDir/src/build/docker-single-reload.sh"
+        }
     }
 }
 
+task 'dev.up' {
+    description "Starts Docker containers for development"
+    group = 'Development:Docker'
+    doFirst {
+        dockerCompose('up', "docker/compose/development/single.yml", ['-d'])
+    }
+}
+
+task 'dev.down' {
+    description "Stops Docker containers for development"
+    group = 'Development:Docker'
+    doFirst {
+        dockerCompose('down', "docker/compose/development/single.yml")
+    }
+}
+
+task 'dev.restart' {
+    description "Restarts Docker containers for development"
+    group = 'Development:Docker'
+    doFirst {
+        dockerCompose('restart', "docker/compose/development/single.yml")
+    }
+}
+
+task 'dev.logs' {
+    description "Display logs for the containers"
+    group = 'Development:Docker'
+    doFirst {
+        dockerCompose('logs', "docker/compose/development/single.yml", ["-f"])
+    }
+}
+
+def dockerCompose(String action, String composeFile, List<String> additionalArgs = []) {
+    def command = ['docker-compose', '-f', composeFile, action] + additionalArgs
+    println "Executing: ${command.join(' ')}"
+    exec {
+        workingDir "."
+        commandLine command
+    }
+}
+
+//   _____         _       
+//  |_   _|__  ___| |_ ___ 
+//    | |/ _ \/ __| __/ __|
+//    | |  __/\__ \ |_\__ \
+//    |_|\___||___/\__|___/
+                        
 
 tasks.test {
     useJUnitPlatform()

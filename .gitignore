@@ -17,6 +17,7 @@ src/*
 !src/plugins/
 !src/lib/
 !src/examples/
+!src/build/
 
 # Ignore everything inside src/plugins and src/lib directories
 src/plugins/*

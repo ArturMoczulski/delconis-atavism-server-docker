@@ -1,6 +1,7 @@
 {
   "java.configuration.updateBuildConfiguration": "automatic",
-  "search.useIgnoreFiles": true,
+  "search.useIgnoreFiles": false,
+  "search.followSymlinks": true,
   "triggerTaskOnSave.tasks": {
     "dev.reload": [
       "src/**/*.java" // <-- Glob pattern to specify which files should trigger the task

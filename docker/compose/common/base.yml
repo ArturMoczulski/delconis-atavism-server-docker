@@ -11,6 +11,7 @@ services:
       - mysql-admin
       - mysql-atavism
       - mysql-world
+    restart: always
     links:
       - mysql-master
       - mysql-admin
@@ -24,6 +25,7 @@ services:
       target: production
       args:
         - IMAGE_NAME=master
+    restart: always
     ports:
       - 9005:9005/tcp
       - 9010:9010/udp

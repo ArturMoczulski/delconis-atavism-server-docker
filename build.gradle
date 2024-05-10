@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id("com.avast.gradle.docker-compose") version "0.17.6"
 }
 
 sourceCompatibility = 1.8
@@ -87,6 +88,24 @@ jar {
 build {
     dependsOn jar
 }
+
+dockerCompose {
+    reload {
+        useComposeFiles = ['docker/compose/development/single.yml']
+        startedServices = ['master','world']
+        projectName = 'atavism-server-development'
+        waitForTcpPorts = false
+        useDockerComposeV2 = true
+    }
+}
+
+task reload {
+    description "Deploys agis.jar and restarts docker containers"
+    dependsOn build
+    dependsOn reloadComposeDown
+    dependsOn reloadComposeUp
+}
+
 
 tasks.test {
     useJUnitPlatform()

@@ -102,8 +102,11 @@ dockerCompose {
 task reload {
     description "Deploys agis.jar and restarts docker containers"
     dependsOn build
-    dependsOn reloadComposeDown
-    dependsOn reloadComposeUp
+
+    exec {
+        workingDir "."
+        commandLine "$rootDir/docker/compose/reload.sh"
+    }
 }
 
 

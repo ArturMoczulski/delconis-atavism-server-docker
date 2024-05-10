@@ -73,5 +73,3 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
     - [ ] Export Prefabs/Nav mesh to server
   - [ ] Create scalable deployment solution on orstration platform
   - [ ] Create Scale Module to manage creating and destroying instances on orstration plaform
-
-## Dev setup

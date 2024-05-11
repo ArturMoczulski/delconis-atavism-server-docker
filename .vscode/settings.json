@@ -14,5 +14,8 @@
       "name": "JavaSE-1.8",
       "path": "/Library/Java/JavaVirtualMachines/temurin-8.jdk/Contents/Home"
     }
-  ]
+  ],
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java"
+  }
 }

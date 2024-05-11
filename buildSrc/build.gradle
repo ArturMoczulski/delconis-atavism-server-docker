@@ -1,7 +1,6 @@
 // buildSrc/build.gradle
 plugins {
-    id 'groovy'
-    id 'java-gradle-plugin'
+    id 'java'
 }
 
 repositories {

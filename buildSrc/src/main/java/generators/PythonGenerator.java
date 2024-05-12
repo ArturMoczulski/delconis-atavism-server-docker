@@ -3,11 +3,32 @@ package atavism.buildSrc.generators;
 import java.util.Set;
 
 import atavism.msgsys.MessageType;
+import atavism.server.messages.PropertyMessage;
 
 import java.util.HashMap;
 import java.lang.reflect.Field;
+import atavism.msgsys.Message;
 
 public class PythonGenerator {
+  public static String generateAtavismWorldMarshallers(
+      HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses) {
+
+    StringBuilder pyCode = new StringBuilder();
+    for (Class<?> clientClass : clientMessagesClasses.keySet()) {
+
+      pyCode.append("# Client messages classes for " + clientClass.getSimpleName() + "\n");
+
+      // Generate list of message classes
+      for (Class<? extends Message> clientMessageClass : clientMessagesClasses.get(clientClass)) {
+        pyCode.append(clientMessageClass.getName());
+      }
+
+      // Add a new line after each class's registrations for better readability
+      pyCode.append("\n");
+    }
+    return pyCode.toString();
+  }
+
   public static String generateAtavismPluginClientsImports(Set<Class<?>> customPluginsClients) {
     StringBuilder imports = new StringBuilder();
     for (Class<?> clientClass : customPluginsClients) {

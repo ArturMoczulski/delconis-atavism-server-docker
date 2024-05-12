@@ -168,7 +168,9 @@ def dockerCompose(String action, String composeFile, List<String> additionalArgs
 //  | |__| (_) | (_| |  __/ | (_| |  __/ | | |  __/ | | (_| | |_| | (_) | | | |
 //   \____\___/ \__,_|\___|  \__, |\___|_| |_|\___|_|  \__,_|\__|_|\___/|_| |_|
 //                           |___/                                             
+task registerPlugins(type : RegisterPluginsTask)
 task registerPluginsMessages(type : RegisterPluginsMessagesTask)
+task setPluginsProperties(type : SetPluginsPropertiesTask)
 //   _____         _       
 //  |_   _|__  ___| |_ ___ 
 //    | |/ _ \/ __| __/ __|

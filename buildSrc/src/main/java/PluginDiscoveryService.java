@@ -16,6 +16,7 @@ import java.nio.file.*;
 import java.io.IOException;
 import java.io.File;
 import java.util.regex.*;
+import atavism.msgsys.Message;
 
 public class PluginDiscoveryService {
   public static final String pluginsSrcDir = "src/plugins";
@@ -130,6 +131,33 @@ public class PluginDiscoveryService {
       }
     });
     return pluginsClients;
+  }
+
+  public static HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses(Set<Class<?>> clientClasses) {
+    HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses = new HashMap();
+
+    for (Class<?> clientClass : clientClasses) {
+      clientMessagesClasses.put(clientClass, clientMessagesClasses(clientClass));
+    }
+
+    return clientMessagesClasses;
+  }
+
+  public static Set<Class<? extends Message>> clientMessagesClasses(Class<?> clientClass) {
+    Set<Class<? extends Message>> messagesClasses = new HashSet<>();
+
+    // Get all declared classes within the outer class
+    Class<?>[] declaredClasses = clientClass.getDeclaredClasses();
+
+    for (Class<?> declaredClass : declaredClasses) {
+      // Check if the declared class is a subclass of Hook
+      if (Message.class.isAssignableFrom(declaredClass) && !Modifier.isAbstract(declaredClass.getModifiers())) {
+        // Add the class to the set with a cast to Class<? extends Hook>
+        messagesClasses.add(declaredClass.asSubclass(Message.class));
+      }
+    }
+
+    return messagesClasses;
   }
 
   private static Set<Field> getMessageTypesFromClientClass(Class<?> clazz) {

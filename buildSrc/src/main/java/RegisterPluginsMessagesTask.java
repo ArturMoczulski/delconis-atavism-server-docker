@@ -17,6 +17,7 @@ import atavism.buildSrc.PluginDiscoveryService;
 import atavism.buildSrc.generators.PythonGenerator;
 import atavism.buildSrc.injectors.CodeInjector;
 import atavism.server.engine.EnginePlugin;
+import atavism.msgsys.Message;
 
 public abstract class RegisterPluginsMessagesTask extends DefaultTask {
 
@@ -24,11 +25,14 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     public static final String extensionsProxyPyPath = "atavism_server/config/world/extensions_proxy.py";
     public static final String allInOneAdsPath = "atavism_server/config/world/all_in_one-ads.txt";
     public static final String proxyAdsPath = "atavism_server/config/world/proxy-ads.txt";
+    public static final String worldMarshallersPath = "atavism_server/config/world/worldmarshallers.txt";
     public static final String worldDir = "atavism_server/config/world";
 
     @TaskAction
     void registerPluginsMessages() throws Exception {
         HashMap<Class<?>, Set<Field>> clientMessages = PluginDiscoveryService.clientClasses();
+        HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses = PluginDiscoveryService
+                .clientMessagesClasses(clientMessages.keySet());
         Set<Class<? extends EnginePlugin>> pluginClasses = PluginDiscoveryService.pluginClasses();
 
         assembleWorldMessagesPy(clientMessages);
@@ -36,6 +40,12 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
         assembleAllInOneAds(clientMessages);
         assembleProxyAds(clientMessages);
         assemblePluginsAds(pluginClasses, clientMessages);
+        assembleWorldMarshallers(clientMessagesClasses);
+    }
+
+    private void assembleWorldMarshallers(HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses) {
+        injectWorldMarshallers(clientMessagesClasses, worldMarshallersPath);
+        System.out.println("Generated client messages world marshallers in " + worldMarshallersPath);
     }
 
     private void assemblePluginsAds(Set<Class<? extends EnginePlugin>> pluginClasses,
@@ -69,6 +79,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
 
                 // Write the ads
                 injectAds(filteredClasses, filePath.toString());
+                System.out.println(pluginSimpleName + ": generated the ads file in " + filePath);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,10 +88,23 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
 
     private void assembleProxyAds(HashMap<Class<?>, Set<Field>> clientMessages) {
         injectAds(clientMessages, proxyAdsPath);
+        System.out.println("Generated client messages ads in " + proxyAdsPath);
     }
 
     private void assembleAllInOneAds(HashMap<Class<?>, Set<Field>> clientMessages) {
         injectAds(clientMessages, allInOneAdsPath);
+        System.out.println("Generated client messages ads in " + allInOneAdsPath);
+    }
+
+    private void injectWorldMarshallers(HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses,
+            String filePath) {
+        String marshallersString = PythonGenerator
+                .generateAtavismWorldMarshallers(clientMessagesClasses);
+
+        CodeInjector.injectCodeBlockAtTheEnd(
+                System.getProperty("user.dir") + "/" + filePath,
+                "CustomPluginsClientMessages",
+                marshallersString, "##");
     }
 
     private void injectAds(HashMap<Class<?>, Set<Field>> classes, String filePath) {
@@ -103,10 +127,12 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
                 System.getProperty("user.dir") + "/" + extensionsProxyPyPath,
                 "CustomPluginsClientMessagesSubtypesRegistrations",
                 subtypesRegistrationsString, "##");
+
+        System.out.println("Generated client messages extensions subtypes in " + extensionsProxyPyPath);
     }
 
     private void assembleWorldMessagesPy(HashMap<Class<?>, Set<Field>> clientMessages) {
-        injectWordMessagesPyImports(clientMessages.keySet());
+        injectWorldMessagesPyImports(clientMessages.keySet());
         injectWorldMessaggesPyMsgTranslations(clientMessages);
     }
 
@@ -116,14 +142,16 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
                 System.getProperty("user.dir") + "/" + worldmessagesPyPath,
                 "CustomPluginsClientMessagesTranslations",
                 msgTranslationsString, "##");
+        System.out.println("Generated client messages translations in " + worldmessagesPyPath);
     }
 
-    private void injectWordMessagesPyImports(Set<Class<?>> classes) {
+    private void injectWorldMessagesPyImports(Set<Class<?>> classes) {
         String importsString = PythonGenerator.generateAtavismPluginClientsImports(classes);
         CodeInjector.injectCodeBlockAtTheTop(
                 System.getProperty("user.dir") + "/" + worldmessagesPyPath,
                 "CustomPluginsImports",
                 importsString, "##");
+        System.out.println("Generated client classes imports in " + worldmessagesPyPath);
     }
 
     private String convertToSnakeCase(String camelCase) {

@@ -104,6 +104,7 @@ build {
     dependsOn 'genertateWorldSh'
 }
 
+
 //   ____                 _                                  _   
 //  |  _ \  _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_ 
 //  | | | |/ _ \ \ / / _ \ |/ _ \| '_ \| '_ ` _ \ / _ \ '_ \| __|
@@ -118,7 +119,9 @@ task ('dev.reload') {
     dependsOn build
 
     doLast {
+
         exec {
+            workingDir "$rootDir"
             commandLine "$rootDir/buildSrc/docker-single-reload.sh"
         }
     }

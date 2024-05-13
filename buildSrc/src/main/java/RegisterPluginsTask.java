@@ -22,7 +22,7 @@ import atavism.server.engine.EnginePlugin;
 
 public abstract class RegisterPluginsTask extends DefaultTask {
 
-    public static final String binDir = "atavism_server/config/world";
+    public static final String worldDir = "atavism_server/config/world";
     public static final String serverStarterPath = "src/lib/atavism/agis/server/ServerStarter.java";
     public static final String allInOnePath = "src/lib/atavism/agis/server/AllInOneServer.java";
     public static final String customPluginsDir = "src/plugins";
@@ -84,10 +84,10 @@ public abstract class RegisterPluginsTask extends DefaultTask {
     private void copyPluginsRegistrationFiles(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
         // Ensure the directory path exists
         Path sourceDir = Paths.get(customPluginsDir);
-        Path destinationDir = Paths.get(binDir);
+        Path destinationDir = Paths.get(worldDir);
         try {
             if (!Files.exists(destinationDir)) {
-                throw new Exception("Can't find bin directory: " + binDir);
+                throw new Exception("Can't find world directory: " + worldDir);
             }
 
             // Process each class in the map

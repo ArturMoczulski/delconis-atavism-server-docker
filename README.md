@@ -11,7 +11,6 @@ Provides and example on how to create containers for a multi server setup.
   - 2-4GB of ram for Docker Engine (Untested at any load, 866mb on init)
 - [Atavism](https://atavismonline.com/) Subscription
 - Atavism Server Download
-- [Gradle](https://gradle.org/)
 - [Java Development Kit 8](https://adoptium.net/temurin/releases/?version=8)
 - [Visual Studio Code](https://code.visualstudio.com/)
 - Visual Studio Code extensions:
@@ -104,17 +103,19 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 
 - Development:Build tasks
 
-  - `gradle dev.reload` - Builds agis.jar, deploys it and restarts the Atavism Server process in the world container. Triggered automatically in VS code on save of any \*.java files in your `src/` directory.
+  - `./gradlew dev.reload` - Builds agis.jar, deploys it and restarts the Atavism Server process in the world container. Triggered automatically in VS code on save of any \*.java files in your `src/` directory.
 
 - Development:Docker tasks
-  - `gradle dev.up` - Starts Docker containers for development
-  - `gradle dev.down` - Stops Docker containers for development
-  - `gradle dev.logs` - Display logs for the dev containers
-  - `gradle dev.restart` - Restarts Docker containers for development
+  - `./gradlew dev.up` - Starts Docker containers for development
+  - `./gradlew dev.down` - Stops Docker containers for development
+  - `./gradlew dev.logs` - Display logs for the dev containers
+  - `./gradlew dev.restart` - Restarts Docker containers for development
 
 #### Structure
 
 - `.gradle`: temporary gradle working directory. Don't modify and don't commit.
+
+- `gradle`: temporary gradle wrapper working directory. Don't modify and don't commit.
 
 - `.vscode`: Visual Studio code settings. Includes automations, task triggers, etc.
 

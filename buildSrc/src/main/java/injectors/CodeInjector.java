@@ -163,7 +163,7 @@ public class CodeInjector {
       }
 
       // Construct the new content block with the full start marker
-      String fullBlock = startMarkerFull + "\n" + newContent + "\n" + endMarker;
+      String fullBlock = "\n" + startMarkerFull + "\n" + newContent + "\n" + endMarker;
 
       if (startIndex != -1 && endIndex != -1) {
         // Replace the existing block

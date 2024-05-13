@@ -67,6 +67,7 @@ sourceSets {
 }
 
 jar {
+
     archiveFileName = 'agis.jar'
 
     // Assumes server dist files location

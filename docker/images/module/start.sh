@@ -26,7 +26,9 @@ fi
 # Use figlet to display the module name
 figlet -c "Start $ATAVISM_MODULE_NAME"
 
-cd /atavism_server/bin/ && ./world.sh -vC $ATAVISM_MODULE_NAME 1
+cd /atavism_server/bin/ 
+chmod u+x world.sh
+./world.sh -vC $ATAVISM_MODULE_NAME 1
 
 sleep 5
 

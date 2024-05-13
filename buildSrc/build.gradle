@@ -58,3 +58,73 @@ sourceSets {
         }
     }
 }
+
+def install = tasks.register("install", Exec) {
+    commandLine 'sh', 'install.sh'
+}
+
+task unzipAtavismServer {
+    doLast {
+        // Define the path for the directory/symlink and the archive
+        def serverDir = new File("$rootDir/../atavism_server")
+        def extractionDir = new File("$rootDir/..")
+        def archiveDir = new File("$rootDir/../archives")
+
+        def archiveFile = { ->
+            fileTree(archiveDir) {
+                include 'atavism_server*.zip'
+            }.files.find { it.exists() }
+        }
+
+        // Check if the atavism_server directory or symlink already exists
+        if (serverDir.exists()) {
+            println "✅ Atavism Server already initialized..."
+        } else {
+            // Check if the ZIP archive exists
+            def archive = archiveFile()
+
+            println 'Unzipping ' + archive.name + ' to atavism_server...'
+
+            // Unzip the archive to the atavism_server directory
+            ant.unzip(src: archive, dest: extractionDir)
+
+            println '✅ Atavism Server unpacked to atavism_server/'
+        }
+    }
+}
+
+task unzipAgis {
+    doLast {
+        // Define the path for the directory/symlink and the archive
+        def serverDir = new File("$rootDir/../src/lib/atavism")
+        def extractionDir = new File("$rootDir/../src/lib")
+        def archive = fileTree("$rootDir/../archives") {
+            include 'agis*.zip'
+        }.singleFile
+
+        // Check if the atavism_server directory or symlink already exists
+        if (serverDir.exists()) {
+            println "✅ AGIS source code already initialized..."
+        }
+        else {
+            // Check if the ZIP archive exists
+            if (archive.exists()) {
+                println 'Unzipping ' + archive.name + ' to src/lib...'
+
+                // Unzip the archive to the atavism_server directory
+                ant.unzip(src: archive, dest: extractionDir)
+
+                println '✅ AGIS source code unpacked to src/lib/'
+            } else {
+                throw new GradleException('❌ No AGIS ZIP archive found in archives directory. Please put your downloaded ZIP copy of the AGIS source code on archives.')
+            }
+        }
+    }
+}
+
+task unzipAtavismDependencies {
+    dependsOn install
+    dependsOn unzipAtavismServer, unzipAgis
+}
+
+compileJava.dependsOn unzipAtavismDependencies

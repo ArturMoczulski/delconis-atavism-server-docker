@@ -16,7 +16,9 @@
                                                   
 figlet -c "Start master"
 
-cd /atavism_server/bin/ && ./auth.sh -vC start 
+cd /atavism_server/bin/
+chmod u+x auth.sh
+./auth.sh -vC start 
 sleep 5 
 
 #   _                    

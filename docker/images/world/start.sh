@@ -22,7 +22,7 @@ echo "${YELLOW}Starting as all_in_one: ${ATAVISM_ALL_IN_ONE_ENABLED}${YELLOW}"
 cd /atavism_server/bin/
 
 # Needs the following set up in world.properties
-# atavism.all_in_one.enabled=false
+chmod u+x world.sh
 ./world.sh -vC start server
 sleep 5 
 

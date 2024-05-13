@@ -11,6 +11,24 @@ import atavism.buildSrc.injectors.*;
 import java.util.regex.*;
 
 public class ShellInjector {
+  public static void injectPluginTypesForStartDomain(String filePath, String blockName, String newContent)
+      throws IOException, RegexNotFound {
+    String codeBlockRegex = "^\\s*PLUGIN_TYPES=\".*\"\\s*$";
+
+    String contentRegex = "\"$";
+
+    CodeInjector.modifyCodeBlock(filePath, blockName, codeBlockRegex, contentRegex, " " + newContent + "\"", "##");
+  }
+
+  public static void injectAgentNamesForStartDomain(String filePath, String blockName, String newContent)
+      throws IOException, RegexNotFound {
+    String codeBlockRegex = "^\\s*AGENT_NAMES=\".*\"\\s*$";
+
+    String contentRegex = "\"$";
+
+    CodeInjector.modifyCodeBlock(filePath, blockName, codeBlockRegex, contentRegex, " " + newContent + "\"", "##");
+  }
+
   public static void injectServerStartHooks(String filePath, String blockName, String newContent)
       throws IOException, RegexNotFound {
     String regex = "^\\s*echo \"Wait for finished initializing msg... \"\\s*$";

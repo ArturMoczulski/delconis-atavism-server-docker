@@ -25,6 +25,36 @@ import com.github.jknack.handlebars.io.*;
 public class ShellGenerator {
   public static final String templatesDir = "buildSrc/templates/sh";
 
+  public static String generatePluginTypesForStartDomain(
+      Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+    // Start functions
+    List<String> pluginTypesStrings = new ArrayList<>();
+    for (Class<? extends EnginePlugin> clazz : pluginClasses) {
+      String pluginTypesString = "-p " + clazz.getSimpleName().replace("Plugin", "");
+      pluginTypesString += ",1";
+
+      pluginTypesStrings.add(pluginTypesString);
+    }
+
+    return String.join(" ", pluginTypesStrings);
+  }
+
+  public static String generateAgentNamesForStartDomain(
+      Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+    // Start functions
+    List<String> agentNamesStrings = new ArrayList<>();
+    for (Class<? extends EnginePlugin> clazz : pluginClasses) {
+      String snakeCasePluginName = convertToSnakeCase(clazz.getSimpleName().replace("Plugin", ""));
+
+      String agentNamesString = "-a " + snakeCasePluginName;
+
+      agentNamesStrings.add(agentNamesString);
+
+    }
+
+    return String.join(" ", agentNamesStrings);
+  }
+
   public static String generateStartServerHooks(
       Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
     // Start functions

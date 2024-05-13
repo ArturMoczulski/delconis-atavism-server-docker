@@ -77,6 +77,16 @@ public abstract class GenerateWorldShTask extends DefaultTask {
                                 "CustomPluginsStartServerHooks",
                                 ShellGenerator.generateStartServerHooks(pluginClasses));
 
+                ShellInjector.injectAgentNamesForStartDomain(
+                                System.getProperty("user.dir") + "/" + worldShPath,
+                                "CustomPluginsStartDomainAgentNames",
+                                ShellGenerator.generateAgentNamesForStartDomain(pluginClasses));
+
+                ShellInjector.injectPluginTypesForStartDomain(
+                                System.getProperty("user.dir") + "/" + worldShPath,
+                                "CustomPluginsStartDomainPluginTypes",
+                                ShellGenerator.generatePluginTypesForStartDomain(pluginClasses));
+
                 System.out.println("Generated world.sh in " + worldShPath);
         }
 

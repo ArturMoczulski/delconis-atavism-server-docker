@@ -14,13 +14,14 @@ import java.io.IOException;
 import java.io.File;
 import java.util.regex.*;
 import atavism.buildSrc.PluginDiscoveryService;
-import atavism.buildSrc.generators.PythonGenerator;
-import atavism.buildSrc.injectors.CodeInjector;
+import atavism.buildSrc.generators.*;
+import atavism.buildSrc.injectors.*;
 import atavism.server.engine.EnginePlugin;
 
 public abstract class RegisterPluginsTask extends DefaultTask {
 
     public static final String binDir = "atavism_server/config/world";
+    public static final String serverStarterPath = "src/lib/atavism/agis/server/ServerStarter.java";
     public static final String customPluginsDir = "src/plugins";
 
     @TaskAction
@@ -28,6 +29,19 @@ public abstract class RegisterPluginsTask extends DefaultTask {
         Set<Class<? extends EnginePlugin>> pluginClasses = PluginDiscoveryService.pluginClasses();
 
         copyPluginsRegistrationFiles(pluginClasses);
+        assembleServerStarter(pluginClasses);
+    }
+
+    private void assembleServerStarter(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+        String allStarters = JavaGenerator.generateServerStarterMethods(pluginClasses);
+
+        JavaInjector.injectBeforeMethod(
+                System.getProperty("user.dir") + "/" + serverStarterPath,
+                "startDomain",
+                "CustomPluginsServerStarterMethods",
+                allStarters.toString());
+
+        System.out.println("Generated ServerStarter methods in " + serverStarterPath);
     }
 
     private void copyPluginsRegistrationFiles(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {

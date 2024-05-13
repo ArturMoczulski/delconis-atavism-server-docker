@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.File;
 import java.util.regex.*;
 import atavism.buildSrc.PluginDiscoveryService;
-import atavism.buildSrc.generators.PythonGenerator;
-import atavism.buildSrc.injectors.CodeInjector;
+import atavism.buildSrc.generators.*;
+import atavism.buildSrc.injectors.*;
 import atavism.server.engine.EnginePlugin;
 import atavism.msgsys.Message;
 
@@ -26,6 +26,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     public static final String allInOneAdsPath = "atavism_server/config/world/all_in_one-ads.txt";
     public static final String proxyAdsPath = "atavism_server/config/world/proxy-ads.txt";
     public static final String worldMarshallersPath = "atavism_server/config/world/worldmarshallers.txt";
+    public static final String messageInitializerPath = "src/lib/atavism/agis/server/messages/MessageInitializer.java";
     public static final String worldDir = "atavism_server/config/world";
 
     @TaskAction
@@ -41,6 +42,13 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
         assembleProxyAds(clientMessages);
         assemblePluginsAds(pluginClasses, clientMessages);
         assembleWorldMarshallers(clientMessagesClasses);
+        assembleMessageInitializer(clientMessages);
+    }
+
+    private void assembleMessageInitializer(
+            HashMap<Class<?>, Set<Field>> clientMessages) throws IOException, RegexNotFound {
+        injectMessageInitialzers(clientMessages, messageInitializerPath);
+        System.out.println("Generated client messages initializer in " + messageInitializerPath);
     }
 
     private void assembleWorldMarshallers(HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses) {
@@ -94,6 +102,18 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     private void assembleAllInOneAds(HashMap<Class<?>, Set<Field>> clientMessages) {
         injectAds(clientMessages, allInOneAdsPath);
         System.out.println("Generated client messages ads in " + allInOneAdsPath);
+    }
+
+    private void injectMessageInitialzers(
+            HashMap<Class<?>, Set<Field>> clientMessages,
+            String filePath) throws IOException, RegexNotFound {
+        String messageInitializersString = JavaGenerator
+                .generateAtavismMessageInitializers(clientMessages);
+
+        JavaInjector.injectMessageInitialzers(
+                System.getProperty("user.dir") + "/" + filePath,
+                "CustomPluginsClientMessagesInitializers",
+                messageInitializersString);
     }
 
     private void injectWorldMarshallers(HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses,

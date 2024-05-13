@@ -95,8 +95,8 @@ public abstract class RegisterPluginsTask extends DefaultTask {
 
     private void copyPluginsRegistrationFiles(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
         // Ensure the directory path exists
-        Path sourceDir = Paths.get(customPluginsDir);
-        Path destinationDir = Paths.get(worldDir);
+        Path sourceDir = Paths.get(projectDir + "/" + customPluginsDir);
+        Path destinationDir = Paths.get(projectDir + "/" + worldDir);
         try {
             if (!Files.exists(destinationDir)) {
                 throw new Exception("Can't find world directory: " + worldDir);
@@ -119,7 +119,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
                     String content = String.join("\n", Files.readAllLines(sourceFilePath));
                     // Copy the file from source to destination
                     CodeInjector.injectCodeBlockAtTheEnd(
-                            projectDir + "/" + destinationPath,
+                            destinationPath.toString(),
                             "CustomPluginRegistration",
                             content, "##");
                     System.out.println(

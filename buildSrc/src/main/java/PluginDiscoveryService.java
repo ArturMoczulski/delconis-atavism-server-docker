@@ -97,7 +97,7 @@ public class PluginDiscoveryService {
     // Traverse all directories starting from baseDir to find matching files
     try {
       Files.walk(Paths.get(
-          pluginsSrcDir))
+          projectDir + "/" + pluginsSrcDir))
           .filter(Files::isRegularFile)
           .filter(path -> path.toString().endsWith("Client.java"))
           .forEach(path -> {

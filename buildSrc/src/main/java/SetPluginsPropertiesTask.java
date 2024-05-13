@@ -65,7 +65,7 @@ public abstract class SetPluginsPropertiesTask extends DefaultTask {
     }
 
     private void injectWorldProperties(Set<Class<? extends EnginePlugin>> pluginClasses) {
-        Path baseDirectory = Paths.get(customPluginsPath);
+        Path baseDirectory = Paths.get(projectDir + "/" + customPluginsPath);
 
         try {
             StringBuilder allProperties = new StringBuilder();
@@ -100,7 +100,7 @@ public abstract class SetPluginsPropertiesTask extends DefaultTask {
     private Map<Class<? extends EnginePlugin>, Set<String>> generateWorldProperties(
             Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
         Map<Class<? extends EnginePlugin>, Set<String>> worldProperties = new HashMap<>();
-        Path directory = Paths.get(worldDir);
+        Path directory = Paths.get(projectDir + "/" + worldDir);
         if (!Files.exists(directory)) {
             throw new Exception("Can't find world directory: " + worldDir);
         }

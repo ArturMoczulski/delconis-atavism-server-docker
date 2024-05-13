@@ -60,19 +60,19 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
 
     private void assembleMessageInitializer(
             HashMap<Class<?>, Set<Field>> clientMessages) throws IOException, RegexNotFound {
-        injectMessageInitialzers(clientMessages, messageInitializerPath);
+        injectMessageInitialzers(clientMessages, projectDir + "/" + messageInitializerPath);
         System.out.println("Generated client messages initializer in " + messageInitializerPath);
     }
 
     private void assembleWorldMarshallers(HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses) {
-        injectWorldMarshallers(clientMessagesClasses, worldMarshallersPath);
+        injectWorldMarshallers(clientMessagesClasses, projectDir + "/" + worldMarshallersPath);
         System.out.println("Generated client messages world marshallers in " + worldMarshallersPath);
     }
 
     private void assemblePluginsAds(Set<Class<? extends EnginePlugin>> pluginClasses,
             HashMap<Class<?>, Set<Field>> clientMessages) throws Exception {
         // Ensure the directory path exists
-        Path directory = Paths.get(worldDir);
+        Path directory = Paths.get(projectDir + "/" + worldDir);
         try {
             if (!Files.exists(directory)) {
                 throw new Exception("Can't find world directory: " + worldDir);
@@ -108,12 +108,12 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     }
 
     private void assembleProxyAds(HashMap<Class<?>, Set<Field>> clientMessages) {
-        injectAds(clientMessages, proxyAdsPath);
+        injectAds(clientMessages, projectDir + "/" + proxyAdsPath);
         System.out.println("Generated client messages ads in " + proxyAdsPath);
     }
 
     private void assembleAllInOneAds(HashMap<Class<?>, Set<Field>> clientMessages) {
-        injectAds(clientMessages, allInOneAdsPath);
+        injectAds(clientMessages, projectDir + "/" + allInOneAdsPath);
         System.out.println("Generated client messages ads in " + allInOneAdsPath);
     }
 
@@ -124,7 +124,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
                 .generateAtavismMessageInitializers(clientMessages);
 
         JavaInjector.injectMessageInitialzers(
-                projectDir + "/" + filePath,
+                filePath,
                 "CustomPluginsClientMessagesInitializers",
                 messageInitializersString);
     }
@@ -135,7 +135,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
                 .generateAtavismWorldMarshallers(clientMessagesClasses);
 
         CodeInjector.injectCodeBlockAtTheEnd(
-                projectDir + "/" + filePath,
+                filePath,
                 "CustomPluginsClientMessages",
                 marshallersString, "##");
     }
@@ -144,7 +144,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
         String adsString = PythonGenerator
                 .generateAtavismAllInOneAdsMessages(classes);
         CodeInjector.injectCodeBlockAtTheEnd(
-                projectDir + "/" + filePath,
+                filePath,
                 "CustomPluginsClientMessages",
                 adsString, "##");
     }

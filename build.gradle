@@ -98,9 +98,9 @@ jar {
 
 build {
     dependsOn jar
-    // dependsOn 'registerPlugins'
-    // dependsOn 'registerPluginsMessages'
-    // dependsOn 'setPluginsProperties'
+    dependsOn 'registerPlugins'
+    dependsOn 'registerPluginsMessages'
+    dependsOn 'setPluginsProperties'
     dependsOn 'genertateWorldSh'
 }
 

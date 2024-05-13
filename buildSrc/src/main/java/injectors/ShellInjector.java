@@ -11,6 +11,27 @@ import atavism.buildSrc.injectors.*;
 import java.util.regex.*;
 
 public class ShellInjector {
+  public static void injectServerStartHooks(String filePath, String blockName, String newContent)
+      throws IOException, RegexNotFound {
+    String regex = "^\\s*echo \"Wait for finished initializing msg... \"\\s*$";
+
+    CodeInjector.injectCodeBlockBeforeRegex(filePath, blockName, newContent, "##", regex);
+  }
+
+  public static void injectStopServerHooks(String filePath, String blockName, String newContent)
+      throws IOException, RegexNotFound {
+    String regex = "^\\s*if \\[ -e \"\\$\\{AO_RUN\\}\"/domain.pid \\]; then\\s*$";
+
+    CodeInjector.injectCodeBlockBeforeRegex(filePath, blockName, newContent, "##", regex);
+  }
+
+  public static void injectServerStatusHooks(String filePath, String blockName, String newContent)
+      throws IOException, RegexNotFound {
+    String regex = "^\\s*status_process \"domain server  \" \\$\\(cat \"\\$\\{AO_RUN\\}\"/domain.pid\\)\\s*";
+
+    CodeInjector.injectCodeBlockAfterRegex(filePath, blockName, newContent, "##", regex);
+  }
+
   public static void injectCommandUsage(String filePath, String blockName, String newCommands)
       throws IOException, CodeBlockNotFound {
     String codeBlockRegex = "^\\s*echo\\s+\"usage\\s+\\$0\\s+-v\\s+-C\\s+start\\|stop\\|status\\|restart\\|proxy\\|wmgr\\|domain\\|combat\\|instance\\|login\\|objmgr\\|mob\\|arena\\|builder\\|auction\\|weather\\|faction\\|chat\\|quest\\|prefab\\|all_in_one\"\\s*$";

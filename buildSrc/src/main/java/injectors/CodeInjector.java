@@ -92,6 +92,29 @@ public class CodeInjector {
     }
   }
 
+  public static void injectCodeBlockAfterRegex(String filePath, String blockName, String newContent,
+      String commentSyntax, String regex) throws RegexNotFound, IOException {
+
+    List<String> lines = Files.readAllLines(Paths.get(filePath));
+    String content = String.join("\n", lines); // Combine lines into a single String
+
+    Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE | Pattern.DOTALL);
+    Matcher matcher = pattern.matcher(content);
+
+    int lineToInject = -1;
+
+    if (matcher.find()) {
+      int end = matcher.end(); // Get the index of the end of the regex match
+      lineToInject = content.substring(0, end).split("\n").length; // Count lines up to the end of the match
+    }
+
+    if (lineToInject != -1) {
+      injectCodeBlock(filePath, blockName, newContent, commentSyntax, lineToInject);
+    } else {
+      throw new RegexNotFound(regex, filePath);
+    }
+  }
+
   public static void injectCodeBlockBeforeRegex(String filePath, String blockName, String newContent,
       String commentSyntax, String regex) throws RegexNotFound, IOException {
 

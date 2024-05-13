@@ -60,6 +60,21 @@ public abstract class GenerateWorldShTask extends DefaultTask {
                 System.getProperty("user.dir") + "/" + worldShPath,
                 "CustomPluginsStartCommandUsage",
                 ShellGenerator.generateStartCommandUsage(pluginClasses));
+
+        ShellInjector.injectServerStatusHooks(
+                System.getProperty("user.dir") + "/" + worldShPath,
+                "CustomPluginsStatusServerHooks",
+                ShellGenerator.generateStatusServerHooks(pluginClasses));
+
+        ShellInjector.injectStopServerHooks(
+                System.getProperty("user.dir") + "/" + worldShPath,
+                "CustomPluginsStopServerHooks",
+                ShellGenerator.generateStopServerHooks(pluginClasses));
+
+        ShellInjector.injectServerStartHooks(
+                System.getProperty("user.dir") + "/" + worldShPath,
+                "CustomPluginsStartServerHooks",
+                ShellGenerator.generateStartServerHooks(pluginClasses));
     }
 
 }

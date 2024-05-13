@@ -25,6 +25,56 @@ import com.github.jknack.handlebars.io.*;
 public class ShellGenerator {
   public static final String templatesDir = "buildSrc/templates/sh";
 
+  public static String generateStartServerHooks(
+      Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+    // Start functions
+    StringBuilder allStartLines = new StringBuilder();
+    allStartLines.append("\tif [ X$RUN_ALL_IN_ONE = X\"false\" ]; then\n");
+    for (Class<? extends EnginePlugin> clazz : pluginClasses) {
+      String snakeCasePluginName = convertToSnakeCase(clazz.getSimpleName().replace("Plugin", ""));
+
+      allStartLines.append("\t\tstart_" + snakeCasePluginName + "\n");
+
+    }
+    allStartLines.append("\tfi");
+
+    return allStartLines.toString();
+  }
+
+  public static String generateStopServerHooks(
+      Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+    // Start functions
+    StringBuilder allKillLines = new StringBuilder();
+    for (Class<? extends EnginePlugin> clazz : pluginClasses) {
+      String snakeCasePluginName = convertToSnakeCase(clazz.getSimpleName().replace("Plugin", ""));
+
+      allKillLines.append("\tif [ -e \"${AO_RUN}\"/" + snakeCasePluginName + ".pid ]; then\n");
+      allKillLines.append(
+          "\t\tkill_process \"" + snakeCasePluginName + " server  \" $(cat \"${AO_RUN}\"/" + snakeCasePluginName
+              + ".pid)\n");
+      allKillLines.append("\tfi\n");
+
+    }
+
+    return allKillLines.toString();
+  }
+
+  public static String generateStatusServerHooks(
+      Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+    // Start functions
+    StringBuilder allStatusLines = new StringBuilder();
+    for (Class<? extends EnginePlugin> clazz : pluginClasses) {
+      String snakeCasePluginName = convertToSnakeCase(clazz.getSimpleName().replace("Plugin", ""));
+
+      allStatusLines.append("if [ $? -ne 0 ]; then down=1 ; fi\n");
+      allStatusLines
+          .append(
+              "status_process \"" + snakeCasePluginName + " \" $(cat \"${AO_RUN}\"/" + snakeCasePluginName + ".pid)\n");
+    }
+
+    return allStatusLines.toString();
+  }
+
   public static String generateStartCommandUsage(
       Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
     // Start functions

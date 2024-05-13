@@ -11,6 +11,33 @@ import atavism.buildSrc.injectors.*;
 import java.util.regex.*;
 
 public class JavaInjector {
+  public static void addToAdsMerger(String filePath, String blockName, String newContent)
+      throws IOException, CodeBlockNotFound {
+    String codeBlockRegex = "AdvertisementFileMerger\\.merge\\(\\s*\"all_in_one\"\\s*,\\s*\"arena\"\\s*,\\s*\"auction\"\\s*,\\s*\"builder\"\\s*,\\s*\"chat\"\\s*,\\s*\"combat\"\\s*,\\s*\"faction\"\\s*,\\s*\"instance\"\\s*,\\s*\"login_manager\"\\s*,\\s*\"mobserver\"\\s*,\\s*\"objmgr\"\\s*,\\s*\"prefab_manager\"\\s*,\\s*\"quest\"\\s*,\\s*\"weather\"\\s*,\\s*\"wmgr\"\\s*\\)\\s*;";
+
+    String contentRegex = "\"wmgr\"";
+
+    try {
+      CodeInjector.modifyCodeBlock(filePath, blockName, codeBlockRegex, contentRegex, "\"wmgr\", " + newContent, "//");
+    } catch (RuntimeException e) { // Assuming RuntimeException is thrown when block is not found
+      throw new CodeBlockNotFound(filePath, blockName, codeBlockRegex);
+    }
+  }
+
+  public static void addToPostScript(String filePath, String blockName, String newContent)
+      throws IOException, CodeBlockNotFound {
+    String codeBlockRegex = "private\\s+static\\s+void\\s+postScript\\(\\)\\s*\\{\\s*setGlobalProperties\\(\\)\\s*;";
+
+    String contentRegex = "setGlobalProperties\\(\\);";
+
+    try {
+      CodeInjector.modifyCodeBlock(filePath, blockName, codeBlockRegex, contentRegex,
+          "setGlobalProperties();\n" + newContent, "//");
+    } catch (RuntimeException e) { // Assuming RuntimeException is thrown when block is not found
+      throw new CodeBlockNotFound(filePath, blockName, codeBlockRegex);
+    }
+  }
+
   public static void injectMessageInitialzers(String filePath, String blockName, String newContent)
       throws IOException, RegexNotFound {
     String regex = "\\s*MessageCatalog\\s+aoMessageCatalog\\s*=\\s*MessageCatalog\\.addMsgCatalog\\(\\s*\"aoMessageCatalog\"\\s*,\\s*1\\s*,\\s*500\\s*\\);\\s*";

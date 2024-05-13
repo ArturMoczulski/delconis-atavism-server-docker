@@ -7,8 +7,10 @@ import org.reflections.util.ClasspathHelper;
 import java.lang.reflect.*;
 import java.util.stream.Collectors;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.nio.file.*;
 import java.io.IOException;
 import java.io.File;
@@ -22,6 +24,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
 
     public static final String binDir = "atavism_server/config/world";
     public static final String serverStarterPath = "src/lib/atavism/agis/server/ServerStarter.java";
+    public static final String allInOnePath = "src/lib/atavism/agis/server/AllInOneServer.java";
     public static final String customPluginsDir = "src/plugins";
 
     @TaskAction
@@ -30,6 +33,40 @@ public abstract class RegisterPluginsTask extends DefaultTask {
 
         copyPluginsRegistrationFiles(pluginClasses);
         assembleServerStarter(pluginClasses);
+        assembleAllInOne(pluginClasses);
+    }
+
+    private void assembleAllInOne(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+        assembleAllInOneAdsMerges(pluginClasses);
+        assembleAllInOnePostScript(pluginClasses);
+
+        System.out.println("Generated AllInOneServer in " + serverStarterPath);
+    }
+
+    private void assembleAllInOnePostScript(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+
+        JavaInjector.addToPostScript(
+                System.getProperty("user.dir") + "/" + allInOnePath,
+                "CustomPluginsAllInOnePostScript",
+                JavaGenerator.generatePostScript(pluginClasses));
+
+        System.out.println("Generated postScript method in " + serverStarterPath);
+    }
+
+    private void assembleAllInOneAdsMerges(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+
+        List<String> pluginNames = new ArrayList();
+
+        for (Class<? extends EnginePlugin> pluginClass : pluginClasses) {
+            pluginNames.add("\"" + convertToSnakeCase(pluginClass.getSimpleName().replace("Plugin", "")) + "\"");
+        }
+
+        JavaInjector.addToAdsMerger(
+                System.getProperty("user.dir") + "/" + allInOnePath,
+                "CustomPluginsAllInOneAdsMerger",
+                String.join(", ", pluginNames));
+
+        System.out.println("Generated ServerStarter methods in " + serverStarterPath);
     }
 
     private void assembleServerStarter(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {

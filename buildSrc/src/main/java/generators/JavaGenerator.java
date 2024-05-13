@@ -24,6 +24,22 @@ import com.github.jknack.handlebars.io.*;
 import com.mysql.cj.protocol.Message;
 
 public class JavaGenerator {
+  public static String generatePostScript(
+      Set<Class<? extends EnginePlugin>> pluginClasses) {
+
+    StringBuilder javaCode = new StringBuilder();
+    for (Class<? extends EnginePlugin> pluginClass : pluginClasses) {
+      String methodName = "start" + pluginClass.getSimpleName().replace("Plugin", "");
+
+      String methodString = "";
+      methodString += "\t\t" + methodName + "();\n";
+
+      javaCode.append(methodString);
+    }
+
+    return javaCode.toString();
+  }
+
   public static String generateServerStarterMethods(
       Set<Class<? extends EnginePlugin>> pluginClasses) {
 

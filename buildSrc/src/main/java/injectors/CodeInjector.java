@@ -26,16 +26,22 @@ public class CodeInjector {
     Matcher blockMatcher = blockPattern.matcher(fileContent);
 
     if (blockMatcher.find()) {
-      // Existing annotated block found, modify it
       String existingBlock = blockMatcher.group(0);
       Pattern originalPattern = Pattern
           .compile(Pattern.quote(originalStartMarker) + "(.*?)" + Pattern.quote(originalEndMarker), Pattern.DOTALL);
       Matcher originalMatcher = originalPattern.matcher(existingBlock);
       if (originalMatcher.find()) {
         String originalContent = originalMatcher.group(1);
-        String modifiedActiveCode = originalContent.replaceAll(contentRegex, newContent).replaceFirst(
-            commentSyntax + " ",
-            "");
+        String[] linesOriginalContent = originalContent.split("\n");
+        StringBuilder modifiedContentBuilder = new StringBuilder();
+
+        for (String line : linesOriginalContent) {
+          line = line.replaceFirst(Pattern.quote(commentSyntax), "").trim(); // Remove the comment syntax and trim
+                                                                             // spaces
+          modifiedContentBuilder.append(line).append("\n");
+        }
+
+        String modifiedActiveCode = modifiedContentBuilder.toString().replaceAll(contentRegex, newContent).trim();
         String newBlock = startMarker + "\n" + commentSyntax + " DO NOT EDIT CODE WITHIN THE BLOCK\n"
             + originalMatcher.group(0) + "\n" + modifiedActiveCode + "\n" + endMarker;
         fileContent = blockMatcher.replaceFirst(Matcher.quoteReplacement(newBlock));
@@ -43,15 +49,14 @@ public class CodeInjector {
         throw new RuntimeException("Original code block not found within the annotated block.");
       }
     } else {
-      // No annotated block found, look for the target pattern to create a new block
       Pattern targetPattern = Pattern.compile(codeBlockRegex, Pattern.MULTILINE);
       Matcher targetMatcher = targetPattern.matcher(fileContent);
       if (targetMatcher.find()) {
         String matchedCodeBlock = targetMatcher.group();
         String formattedOriginalBlock = formatOriginalCodeBlock(matchedCodeBlock, blockName, commentSyntax);
         String modifiedMatchedCode = matchedCodeBlock.replaceAll(contentRegex, newContent);
-        String newBlock = startMarker + "\n" + commentSyntax + " DO NOT EDIT CODE WITHIN THE BLOCK\n"
-            + formattedOriginalBlock + "\n" + modifiedMatchedCode + "\n" + endMarker;
+        String newBlock = "\n" + startMarker + "\n" + commentSyntax + " DO NOT EDIT CODE WITHIN THE BLOCK\n"
+            + formattedOriginalBlock + "\n" + modifiedMatchedCode + "\n" + endMarker + "\n";
         fileContent = targetMatcher.replaceFirst(Matcher.quoteReplacement(newBlock));
       } else {
         throw new RuntimeException("Target code block not found.");

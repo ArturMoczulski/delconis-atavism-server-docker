@@ -171,6 +171,7 @@ def dockerCompose(String action, String composeFile, List<String> additionalArgs
 task registerPlugins(type : RegisterPluginsTask)
 task registerPluginsMessages(type : RegisterPluginsMessagesTask)
 task setPluginsProperties(type : SetPluginsPropertiesTask)
+task genertateWorldSh(type : GenerateWorldShTask)
 //   _____         _       
 //  |_   _|__  ___| |_ ___ 
 //    | |/ _ \/ __| __/ __|

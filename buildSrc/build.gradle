@@ -12,8 +12,8 @@ dependencies {
     implementation gradleApi()
     implementation localGroovy()
 
-    // Optional: Use a library like Reflections if you want a simpler API for class scanning
     implementation 'org.reflections:reflections:0.10.2'
+    implementation 'com.github.jknack:handlebars:4.3.1'
 
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.3'
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.2'

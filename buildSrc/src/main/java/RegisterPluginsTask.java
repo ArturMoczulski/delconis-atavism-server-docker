@@ -1,5 +1,6 @@
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.Input;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
@@ -27,9 +28,20 @@ public abstract class RegisterPluginsTask extends DefaultTask {
     public static final String allInOnePath = "src/lib/atavism/agis/server/AllInOneServer.java";
     public static final String customPluginsDir = "src/plugins";
 
+    private String projectDir;
+
+    @Input
+    public String getProjectDir() {
+        return projectDir;
+    }
+
+    public void setProjectDir(String projectDir) {
+        this.projectDir = projectDir;
+    }
+
     @TaskAction
     void registerPlugins() throws Exception {
-        Set<Class<? extends EnginePlugin>> pluginClasses = PluginDiscoveryService.pluginClasses();
+        Set<Class<? extends EnginePlugin>> pluginClasses = new PluginDiscoveryService(projectDir).pluginClasses();
 
         copyPluginsRegistrationFiles(pluginClasses);
         assembleServerStarter(pluginClasses);
@@ -46,7 +58,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
     private void assembleAllInOnePostScript(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
 
         JavaInjector.addToPostScript(
-                System.getProperty("user.dir") + "/" + allInOnePath,
+                projectDir + "/" + allInOnePath,
                 "CustomPluginsAllInOnePostScript",
                 JavaGenerator.generatePostScript(pluginClasses));
 
@@ -62,7 +74,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
         }
 
         JavaInjector.addToAdsMerger(
-                System.getProperty("user.dir") + "/" + allInOnePath,
+                projectDir + "/" + allInOnePath,
                 "CustomPluginsAllInOneAdsMerger",
                 String.join(", ", pluginNames));
 
@@ -73,7 +85,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
         String allStarters = JavaGenerator.generateServerStarterMethods(pluginClasses);
 
         JavaInjector.injectBeforeMethod(
-                System.getProperty("user.dir") + "/" + serverStarterPath,
+                projectDir + "/" + serverStarterPath,
                 "startDomain",
                 "CustomPluginsServerStarterMethods",
                 allStarters.toString());
@@ -107,7 +119,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
                     String content = String.join("\n", Files.readAllLines(sourceFilePath));
                     // Copy the file from source to destination
                     CodeInjector.injectCodeBlockAtTheEnd(
-                            System.getProperty("user.dir") + "/" + destinationPath,
+                            projectDir + "/" + destinationPath,
                             "CustomPluginRegistration",
                             content, "##");
                     System.out.println(

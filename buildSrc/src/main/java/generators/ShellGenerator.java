@@ -180,9 +180,9 @@ public class ShellGenerator {
   }
 
   public static String generateStartFuncs(
-      Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
+      Set<Class<? extends EnginePlugin>> pluginClasses, String projectDir) throws Exception {
     // Start functions
-    HashMap<Class<? extends EnginePlugin>, String> startFuncs = generateStartFuncsByPlugin(pluginClasses);
+    HashMap<Class<? extends EnginePlugin>, String> startFuncs = generateStartFuncsByPlugin(pluginClasses, projectDir);
 
     StringBuilder allStartFuncs = new StringBuilder();
     for (Class<? extends EnginePlugin> clazz : pluginClasses) {
@@ -199,8 +199,8 @@ public class ShellGenerator {
   }
 
   public static HashMap<Class<? extends EnginePlugin>, String> generateStartFuncsByPlugin(
-      Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
-    TemplateLoader loader = new FileTemplateLoader(System.getProperty("user.dir") + "/" + templatesDir, ".sh");
+      Set<Class<? extends EnginePlugin>> pluginClasses, String projectDir) throws Exception {
+    TemplateLoader loader = new FileTemplateLoader(projectDir + "/" + templatesDir, ".sh");
     Handlebars handlebars = new Handlebars().with(loader);
     Template template = handlebars.compile("start_plugin");
 

@@ -1,5 +1,6 @@
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.Input;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
@@ -24,20 +25,32 @@ public abstract class GenerateWorldShTask extends DefaultTask {
 
         public static final String worldShPath = "atavism_server/bin/world.sh";
 
+        private String projectDir;
+
+        @Input
+        public String getProjectDir() {
+                return projectDir;
+        }
+
+        public void setProjectDir(String projectDir) {
+                this.projectDir = projectDir;
+        }
+
         @TaskAction
         void genertateWorldSh() throws Exception {
-                Set<Class<? extends EnginePlugin>> pluginClasses = PluginDiscoveryService.pluginClasses();
+                Set<Class<? extends EnginePlugin>> pluginClasses = new PluginDiscoveryService(projectDir)
+                                .pluginClasses();
 
                 assembleWorldSh(pluginClasses);
 
         }
 
-        private static void assembleWorldSh(Set<Class<? extends EnginePlugin>> pluginClasses)
+        private void assembleWorldSh(Set<Class<? extends EnginePlugin>> pluginClasses)
                         throws Exception, FunctionNotFound, VariableDefinitionNotFound, AllInOneCommandCaseNotFound {
-                String allStartFuncs = ShellGenerator.generateStartFuncs(pluginClasses);
+                String allStartFuncs = ShellGenerator.generateStartFuncs(pluginClasses, projectDir);
 
                 ShellInjector.injectBeforeFunction(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "start_domain",
                                 "CustomPluginsStartFunctions",
                                 allStartFuncs.toString());
@@ -45,7 +58,7 @@ public abstract class GenerateWorldShTask extends DefaultTask {
                 String allJavaFlags = ShellGenerator.generateJavaFlags(pluginClasses);
 
                 ShellInjector.injectBeforeVariableDefinition(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "JAVA_DOMAIN",
                                 "CustomPluginsJavaFlagsFunctions",
                                 allJavaFlags.toString());
@@ -53,37 +66,37 @@ public abstract class GenerateWorldShTask extends DefaultTask {
                 String allCommandCases = ShellGenerator.generateStartCommandCases(pluginClasses);
 
                 ShellInjector.injectBeforeAllIneOneStartCommandParam(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "CustomPluginsStartCommands",
                                 allCommandCases.toString());
 
                 ShellInjector.injectCommandUsage(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "CustomPluginsStartCommandUsage",
                                 ShellGenerator.generateStartCommandUsage(pluginClasses));
 
                 ShellInjector.injectServerStatusHooks(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "CustomPluginsStatusServerHooks",
                                 ShellGenerator.generateStatusServerHooks(pluginClasses));
 
                 ShellInjector.injectStopServerHooks(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "CustomPluginsStopServerHooks",
                                 ShellGenerator.generateStopServerHooks(pluginClasses));
 
                 ShellInjector.injectServerStartHooks(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "CustomPluginsStartServerHooks",
                                 ShellGenerator.generateStartServerHooks(pluginClasses));
 
                 ShellInjector.injectAgentNamesForStartDomain(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "CustomPluginsStartDomainAgentNames",
                                 ShellGenerator.generateAgentNamesForStartDomain(pluginClasses));
 
                 ShellInjector.injectPluginTypesForStartDomain(
-                                System.getProperty("user.dir") + "/" + worldShPath,
+                                projectDir + "/" + worldShPath,
                                 "CustomPluginsStartDomainPluginTypes",
                                 ShellGenerator.generatePluginTypesForStartDomain(pluginClasses));
 

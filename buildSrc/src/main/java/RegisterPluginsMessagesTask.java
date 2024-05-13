@@ -1,5 +1,6 @@
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.Input;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
@@ -29,12 +30,24 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     public static final String messageInitializerPath = "src/lib/atavism/agis/server/messages/MessageInitializer.java";
     public static final String worldDir = "atavism_server/config/world";
 
+    private String projectDir;
+
+    @Input
+    public String getProjectDir() {
+        return projectDir;
+    }
+
+    public void setProjectDir(String projectDir) {
+        this.projectDir = projectDir;
+    }
+
     @TaskAction
     void registerPluginsMessages() throws Exception {
-        HashMap<Class<?>, Set<Field>> clientMessages = PluginDiscoveryService.clientClasses();
-        HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses = PluginDiscoveryService
+        PluginDiscoveryService pluginDiscovery = new PluginDiscoveryService(projectDir);
+        HashMap<Class<?>, Set<Field>> clientMessages = pluginDiscovery.clientClasses();
+        HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses = pluginDiscovery
                 .clientMessagesClasses(clientMessages.keySet());
-        Set<Class<? extends EnginePlugin>> pluginClasses = PluginDiscoveryService.pluginClasses();
+        Set<Class<? extends EnginePlugin>> pluginClasses = pluginDiscovery.pluginClasses();
 
         assembleWorldMessagesPy(clientMessages);
         assembleExtensionsProxyPy(clientMessages);
@@ -111,7 +124,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
                 .generateAtavismMessageInitializers(clientMessages);
 
         JavaInjector.injectMessageInitialzers(
-                System.getProperty("user.dir") + "/" + filePath,
+                projectDir + "/" + filePath,
                 "CustomPluginsClientMessagesInitializers",
                 messageInitializersString);
     }
@@ -122,7 +135,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
                 .generateAtavismWorldMarshallers(clientMessagesClasses);
 
         CodeInjector.injectCodeBlockAtTheEnd(
-                System.getProperty("user.dir") + "/" + filePath,
+                projectDir + "/" + filePath,
                 "CustomPluginsClientMessages",
                 marshallersString, "##");
     }
@@ -131,7 +144,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
         String adsString = PythonGenerator
                 .generateAtavismAllInOneAdsMessages(classes);
         CodeInjector.injectCodeBlockAtTheEnd(
-                System.getProperty("user.dir") + "/" + filePath,
+                projectDir + "/" + filePath,
                 "CustomPluginsClientMessages",
                 adsString, "##");
     }
@@ -144,7 +157,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
         String subtypesRegistrationsString = PythonGenerator
                 .generateAtavismExtensionsProxyPySubtypesRegistrations(classes);
         CodeInjector.injectCodeBlockAtTheEnd(
-                System.getProperty("user.dir") + "/" + extensionsProxyPyPath,
+                projectDir + "/" + extensionsProxyPyPath,
                 "CustomPluginsClientMessagesSubtypesRegistrations",
                 subtypesRegistrationsString, "##");
 
@@ -159,7 +172,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     private void injectWorldMessaggesPyMsgTranslations(HashMap<Class<?>, Set<Field>> classes) {
         String msgTranslationsString = PythonGenerator.generateAtavsimWorldMessagesPyMsgTranslations(classes);
         CodeInjector.injectCodeBlockAtTheEnd(
-                System.getProperty("user.dir") + "/" + worldmessagesPyPath,
+                projectDir + "/" + worldmessagesPyPath,
                 "CustomPluginsClientMessagesTranslations",
                 msgTranslationsString, "##");
         System.out.println("Generated client messages translations in " + worldmessagesPyPath);
@@ -168,7 +181,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     private void injectWorldMessagesPyImports(Set<Class<?>> classes) {
         String importsString = PythonGenerator.generateAtavismPluginClientsImports(classes);
         CodeInjector.injectCodeBlockAtTheTop(
-                System.getProperty("user.dir") + "/" + worldmessagesPyPath,
+                projectDir + "/" + worldmessagesPyPath,
                 "CustomPluginsImports",
                 importsString, "##");
         System.out.println("Generated client classes imports in " + worldmessagesPyPath);

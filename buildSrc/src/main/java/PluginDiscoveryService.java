@@ -19,10 +19,17 @@ import java.util.regex.*;
 import atavism.msgsys.Message;
 
 public class PluginDiscoveryService {
+
+  private String projectDir;
+
   public static final String pluginsSrcDir = "src/plugins";
   public static final String pluginsJavaPackage = "atavism.agis.plugins";
 
-  public static Set<Class<? extends EnginePlugin>> pluginClasses() {
+  public PluginDiscoveryService(String projectDir) {
+    this.projectDir = projectDir;
+  }
+
+  public Set<Class<? extends EnginePlugin>> pluginClasses() {
     Reflections reflections = new Reflections(pluginsJavaPackage, new SubTypesScanner(false));
 
     // Find all classes within the package that end with 'Plugin'
@@ -37,7 +44,7 @@ public class PluginDiscoveryService {
     // Traverse all directories starting from baseDir to find matching files
     try {
       Files.walk(Paths.get(
-          pluginsSrcDir))
+          projectDir + "/" + pluginsSrcDir))
           .filter(Files::isRegularFile)
           .filter(path -> path.toString().endsWith("Plugin.java"))
           .forEach(path -> {
@@ -75,7 +82,7 @@ public class PluginDiscoveryService {
     return customPluginClasses;
   }
 
-  public static HashMap<Class<?>, Set<Field>> clientClasses() {
+  public HashMap<Class<?>, Set<Field>> clientClasses() {
     Reflections reflections = new Reflections(pluginsJavaPackage, new SubTypesScanner(false));
 
     // Find all classes within the package that end with 'Client'
@@ -133,7 +140,7 @@ public class PluginDiscoveryService {
     return pluginsClients;
   }
 
-  public static HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses(Set<Class<?>> clientClasses) {
+  public HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses(Set<Class<?>> clientClasses) {
     HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses = new HashMap();
 
     for (Class<?> clientClass : clientClasses) {
@@ -143,7 +150,7 @@ public class PluginDiscoveryService {
     return clientMessagesClasses;
   }
 
-  public static Set<Class<? extends Message>> clientMessagesClasses(Class<?> clientClass) {
+  public Set<Class<? extends Message>> clientMessagesClasses(Class<?> clientClass) {
     Set<Class<? extends Message>> messagesClasses = new HashSet<>();
 
     // Get all declared classes within the outer class
@@ -160,7 +167,7 @@ public class PluginDiscoveryService {
     return messagesClasses;
   }
 
-  private static Set<Field> getMessageTypesFromClientClass(Class<?> clazz) {
+  private Set<Field> getMessageTypesFromClientClass(Class<?> clazz) {
     HashSet<Field> msgTypes = new HashSet<Field>();
 
     // Get all fields of the class
@@ -179,7 +186,7 @@ public class PluginDiscoveryService {
     return msgTypes;
   }
 
-  public static String extractClassPathFromPluginSourcePath(String fullPath) {
+  public String extractClassPathFromPluginSourcePath(String fullPath) {
     // Regular expression to find '/src/' and capture everything after it until
     // '.java'
     String regex = pluginsSrcDir + "/.*/src/(.*\\.java)";

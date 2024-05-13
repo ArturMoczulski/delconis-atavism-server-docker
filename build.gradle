@@ -98,9 +98,9 @@ jar {
 
 build {
     dependsOn jar
-    dependsOn 'registerPlugins'
-    dependsOn 'registerPluginsMessages'
-    dependsOn 'setPluginsProperties'
+    // dependsOn 'registerPlugins'
+    // dependsOn 'registerPluginsMessages'
+    // dependsOn 'setPluginsProperties'
     dependsOn 'genertateWorldSh'
 }
 
@@ -174,10 +174,18 @@ def dockerCompose(String action, String composeFile, List<String> additionalArgs
 //  | |__| (_) | (_| |  __/ | (_| |  __/ | | |  __/ | | (_| | |_| | (_) | | | |
 //   \____\___/ \__,_|\___|  \__, |\___|_| |_|\___|_|  \__,_|\__|_|\___/|_| |_|
 //                           |___/                                             
-task registerPlugins(type : RegisterPluginsTask)
-task registerPluginsMessages(type : RegisterPluginsMessagesTask)
-task setPluginsProperties(type : SetPluginsPropertiesTask)
-task genertateWorldSh(type : GenerateWorldShTask)
+task registerPlugins(type : RegisterPluginsTask) {
+    projectDir = project.projectDir
+}
+task registerPluginsMessages(type : RegisterPluginsMessagesTask) {
+    projectDir = project.projectDir
+}
+task setPluginsProperties(type : SetPluginsPropertiesTask) {
+    projectDir = project.projectDir
+}
+task genertateWorldSh(type : GenerateWorldShTask) {
+    projectDir = project.projectDir
+}
 //   _____         _       
 //  |_   _|__  ___| |_ ___ 
 //    | |/ _ \/ __| __/ __|

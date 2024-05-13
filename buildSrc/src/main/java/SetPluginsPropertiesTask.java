@@ -1,5 +1,6 @@
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.Input;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ConfigurationBuilder;
@@ -26,6 +27,17 @@ public abstract class SetPluginsPropertiesTask extends DefaultTask {
     public static final String customPluginsPath = "src/plugins";
     public static final String customPluginPropertiesFileName = "plugin.properties";
 
+    private String projectDir;
+
+    @Input
+    public String getProjectDir() {
+        return projectDir;
+    }
+
+    public void setProjectDir(String projectDir) {
+        this.projectDir = projectDir;
+    }
+
     // Define a static map to hold all properties
     // Not currently used, instead properties are just
     // read from a file
@@ -43,7 +55,7 @@ public abstract class SetPluginsPropertiesTask extends DefaultTask {
 
     @TaskAction
     void setPluginsPropertiesTask() throws Exception {
-        Set<Class<? extends EnginePlugin>> pluginClasses = PluginDiscoveryService.pluginClasses();
+        Set<Class<? extends EnginePlugin>> pluginClasses = new PluginDiscoveryService(projectDir).pluginClasses();
 
         assembleWorldProperties(pluginClasses);
     }
@@ -74,7 +86,7 @@ public abstract class SetPluginsPropertiesTask extends DefaultTask {
 
             if (allProperties.length() > 0) {
                 CodeInjector.injectCodeBlockAtTheEnd(
-                        System.getProperty("user.dir") + "/" + worldPropertiesPath,
+                        projectDir + "/" + worldPropertiesPath,
                         "CustomPluginsProperties",
                         allProperties.toString(), "##");
 
@@ -100,7 +112,7 @@ public abstract class SetPluginsPropertiesTask extends DefaultTask {
         return worldProperties;
     }
 
-    private static Set<String> generateProperties(Class<? extends EnginePlugin> pluginClass,
+    private Set<String> generateProperties(Class<? extends EnginePlugin> pluginClass,
             Map<String, String> properties) {
         Set<String> propertiesSet = new HashSet();
         String snakeCasePluginName = convertToSnakeCase(pluginClass.getSimpleName().replace("Plugin", ""));

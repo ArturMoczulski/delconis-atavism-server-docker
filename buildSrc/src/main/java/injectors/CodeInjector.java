@@ -168,7 +168,7 @@ public class CodeInjector {
       }
 
       // Construct the new content block with the full start marker
-      String fullBlock = "\n" + startMarkerFull + "\n" + newContent + "\n" + endMarker;
+      String fullBlock = startMarkerFull + "\n" + newContent + "\n" + endMarker;
 
       if (startIndex != -1 && endIndex != -1) {
         // Replace the existing block
@@ -182,7 +182,7 @@ public class CodeInjector {
         int insertIndex = lineNumber > 0 ? lineNumber - 1 : 0;
         // Ensure insert index does not exceed file size
         insertIndex = Math.min(insertIndex, lines.size());
-        lines.add(insertIndex, fullBlock);
+        lines.add(insertIndex, "\n" + fullBlock);
       }
 
       // Write the modified content back to the file

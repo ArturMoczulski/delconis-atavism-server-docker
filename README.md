@@ -70,29 +70,6 @@ openssl rsa -in atavism.pem -out private.pem -outform PEM
 openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
 ```
 
-### Goals
-
-- [x] Easy `docker compose up -d` Setup for Demo server
-- [ ] Build Containers for each Demo service
-  - [x] MySQL Admin
-  - [x] MySQL Atavism
-  - [x] MySQL master
-  - [x] MySQL world_content
-  - [x] All in One
-  - [ ] Auth Server
-  - [ ] Proxy Server
-  - [ ] Prefab Server
-  - [ ] Auction Server
-  - [ ] ETC.
-- [ ] Add Intergration, such as Wordpress.
-- [ ] Add Atavism Editor Webapp
-- [ ] Build Containers for each Core Serice
-  - [ ] Same as demo
-  - [ ] Add Client Build
-    - [ ] Export Prefabs/Nav mesh to server
-  - [ ] Create scalable deployment solution on orstration platform
-  - [ ] Create Scale Module to manage creating and destroying instances on orstration plaform
-
 ### Development with VS Code + Gradle workflow
 
 #### Setup
@@ -147,38 +124,25 @@ openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > privat
 
 - `ssl`: store your SSL keys here
 
-#### Adding a new plugin to All in one
+### Goals
 
-1. In `ServerStart` add a plugin start method to register your plugin:
-
-```java
-public static void startMyNewPlugin() {;
-    Engine.registerPlugin("atavism.agis.plugins.MyNewPlugin");
-}
-```
-
-2. In `AllInOne::postScript` invoke your plugin registration:
-
-```java
-private static void postScript() {
-    ...
-    // My New Plugin
-    startMyNewPlugin();
-}
-```
-
-3. In `AllIneOne::main` add your plugin's camelcased name to the list of registered plugins:
-
-```java
-AdvertisementFileMerger.merge(..., "your_new_plugin");
-```
-
-4. In `MessageInitializer::init` add all your plugins new messages:
-
-```java
-public static void init() {
-    ...
-    // Real Health Plugin
-    aoMessageCatalog.addMsgTypeTranslation(MyNewPluginClient.MSG_TYPE_MY_NEW_MESSAGE);
-}
-```
+- [x] Easy `docker compose up -d` Setup for Demo server
+- [ ] Build Containers for each Demo service
+  - [x] MySQL Admin
+  - [x] MySQL Atavism
+  - [x] MySQL master
+  - [x] MySQL world_content
+  - [x] All in One
+  - [ ] Auth Server
+  - [ ] Proxy Server
+  - [ ] Prefab Server
+  - [ ] Auction Server
+  - [ ] ETC.
+- [ ] Add Intergration, such as Wordpress.
+- [ ] Add Atavism Editor Webapp
+- [ ] Build Containers for each Core Serice
+  - [ ] Same as demo
+  - [ ] Add Client Build
+    - [ ] Export Prefabs/Nav mesh to server
+  - [ ] Create scalable deployment solution on orstration platform
+  - [ ] Create Scale Module to manage creating and destroying instances on orstration plaform

@@ -26,7 +26,9 @@ Development workflow and Docker setup for Atavism Server
 
 3. `./gradlew dev.up`
 
-4. Connect with your Unity client.
+_Note:_ Currently the services do not have a docker healthcheck implemented, so they tend to fail connect to the database at first start. It's recommended to run `./gradle dev.restart` again after a couple of seconds if you're experiencing issues connecting to your Atavism Server. 
+
+5. Connect with your Unity client.
 
 ### Creating a new plugin
 
@@ -35,8 +37,6 @@ Development workflow and Docker setup for Atavism Server
 2. `./gradlew -PpluginName=Superhero -PmessageName=ShootLaserFromEyes newGenericMessage`
 
 3. `./gradlew dev.restart`
-
-_Note:_ Currently the services do not have a docker healthcheck implemented, so they tend to fail connect to the database at first start. It's recommended to run `./gradle dev.restart` again after a couple of seconds if you're experiencing issues connecting to your Atavism Server. 
 
 4. Call the Atavim Server with your new message from the client:
 

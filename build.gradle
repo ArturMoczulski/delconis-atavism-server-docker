@@ -187,13 +187,14 @@ task genertateWorldSh(type : GenerateWorldShTask) {
 }
 task newPlugin(type: NewPluginTask) {
     projectDir = projectDir.toString()
-    pluginName = project.property('pluginName')
+
+    pluginName = project.hasProperty('pluginName') ? project.property('pluginName') : null
 }
 task newGenericMessage(type: NewGenericMessageTask) {
     projectDir = projectDir.toString()
 
-    pluginName = project.findProperty('pluginName')
-    messageName = project.findProperty('messageName')
+    pluginName = project.hasProperty('pluginName') ? project.property('pluginName') : null
+    messageName = project.hasProperty('messageName') ? project.property('messageName') : null
 }
 //   _____         _       
 //  |_   _|__  ___| |_ ___ 

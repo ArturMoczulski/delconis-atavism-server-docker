@@ -76,10 +76,20 @@ public abstract class NewGenericMessageTask extends DefaultTask {
                 TemplateProcessor templateProcessor = new TemplateProcessor(source, templateDir, namingContext,
                         handlebars);
                 templateProcessor.process(targetDir);
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+
+        String pluginSnakeCase = pluginName.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
+        String messageSnakeCase = messageName.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
+        String messageCapitalized = messageSnakeCase.toUpperCase();
+
+        System.out.println("✅ New "+ messageName+" client message boilerplate created in " + pluginName);
+        System.out.println("ℹ️ Use the follwing code to send the message from the Unity client to Atavism Server:");
+        System.out.println("NetworkAPI.SendExtensionMessage(ClientAPI.GetPlayerOid(), false, \""+pluginSnakeCase+"."+messageCapitalized+"\", new Dictionary<string, object>());");
     }
 
     private static class NamingContext {

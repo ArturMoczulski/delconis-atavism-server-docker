@@ -91,10 +91,14 @@ public abstract class NewPluginTask extends DefaultTask {
                     // Write processed template to destination
                     String output = contentTemplate.apply(contentContext);
                     Files.write(destination, output.getBytes());
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
+
+        System.out.println("✅ New "+pluginCamelCase+" plugin boilerplate created in " + customPluginsPath + "/" + pluginName);
+        System.out.println("ℹ️ Use `./gradlew -PpluginName="+pluginCamelCase+" -PmessageName=YourNewMessage newGenericMessage` to also generate boilerplate for Client to Server messages.");
     }
 }

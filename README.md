@@ -3,7 +3,7 @@
 Development workflow and Docker setup for Atavism Server
 
 Watch quick preview on YouTube
-<a href="https://youtu.be/8QwwByLSrZ4"><img width="1712" alt="Screenshot 2024-05-14 at 5 02 30 AM" src="https://github.com/ArturMoczulski/delconis-atavism-server-docker/assets/2106631/699b2775-0d7c-4f45-9706-bc72413b57c1"></a>
+<a href="https://youtu.be/8QwwByLSrZ4"><img width="1712" alt="Screenshot 2024-05-14 at 5 02 30 AM" src="https://github.com/ArturMoczulski/delconis-atavism-server-docker/assets/2106631/699b2775-0d7c-4f45-9706-bc72413b57c1" target="_blank"></a>
 
 
 ### Prerequisites

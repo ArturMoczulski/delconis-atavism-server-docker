@@ -20,17 +20,45 @@ Provides and example on how to create containers for a multi server setup.
 
 ### Getting started
 
-1. Download the atavism_server.zip to the root of this project `atavism_server_10_9_0_20231229_1523.zip`. If you have your Atavism Server in a git repo you can also just clone it to the root as `atavism_server` directory. `atavism_server` directory is ignored in this repo's `.gitignore` to make updates easy.
+1. Download Atavism Server ZIP and Agis ZIP from [Atavism Online APanel](https://apanel.atavismonline.com/) into `archives/`.
 
-2. Update the `docker/compose/development/.env` and `docker/compose/production/.env` file with your
+2. `./gradlew install`
 
-- ATAVISM_EMAIL with your email
-- ATAVISM_KEY with your liscense key
-- Update MySQL Credentails or create override file.
+3. `./gradlew dev.up`
 
-There are example templates provided in the same directory `env.example`
+4. Connect with your Unity client.
 
-3. Create or provide a OpenSSH Key `private.key` to the root of this project
+### Creating a new plugin
+
+1. `./gradlew -PpluginName=Superhero newPlugin`
+
+2. `./gradlew -PpluginName=Superhero -PmessageName=ShootLaserFromEyes newGenericMessage`
+
+3. `./gradlew dev.restart`
+
+_Note:_ Currently the services do not have a docker healthcheck implemented, so they tend to fail connect to the database at first start. It's recommended to restart the `world` and `master` service after a couple of seconds so it reattempts to connect to mysql once it's accepting connections.
+
+4. Call the Atavim Server with your new message from the client:
+
+```C#
+NetworkAPI.SendExtensionMessage(
+  ClientAPI.GetPlayerOid(), false, "superhero.MSG_TYPE_SUPERHERO_SHOOT_LASER_FROM_EYES", new Dictionary<string, object>()
+);
+```
+
+5. Inspect your `atavism_server/logs/world/all_in_one.log` for your message being received by the server.
+
+_Note:_ Remember to set `atavism.log_level=X` to an appropriate level in `atavism_server/bin/world.properties` to see your log messages.
+
+### Configuring your environment
+
+#### Environment files
+
+There are separate environment files for `development` and `production`. You can place them in `docker/compose/{environmentName}/.env` and use `.env.example` file as a boilerplate. This is where you can change your database credentials, etc. 
+
+#### SSL
+
+Create or provide a OpenSSH Key `private.key` to the root of this project
 
 ```
 docker run -it -v ./ssl/:/key mysql /bin/sh
@@ -41,24 +69,6 @@ openssl rsa -in atavism.pem -outform PEM -pubout -out atavismkey.txt
 openssl rsa -in atavism.pem -out private.pem -outform PEM
 openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
 ```
-
-#### For development setup
-
-4. Build the containers with docker compose `docker-compose -f docker/compose/development/single.yml build`
-5. Run `docker-compose -f docker/compose/development/single.yml up -d`
-
-_Note:_ Currently the services do not have a docker healthcheck implemented, so they tend to fail connect to the database at first start. It's recommended to restart the `world` and `master` service after a couple of seconds so it reattempts to connect to mysql once it's accepting connections.
-
-#### For production setup
-
-4. Build the containers with docker compose `docker-compose -f docker/compose/production/single.yml build`
-5. Run `docker-compose -f docker/compose/production/single.yml up -d`
-
-#### Unity client
-
-6. Configure Unity Client with User/Passwords/PublicKey as IP information as needed
-
-- `docker inspect atavismonline-server-docker-world-1` (Network Section) might be of use
 
 ### Goals
 
@@ -83,25 +93,21 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
   - [ ] Create scalable deployment solution on orstration platform
   - [ ] Create Scale Module to manage creating and destroying instances on orstration plaform
 
-### VS Code + Gradle workflow
+### Development with VS Code + Gradle workflow
 
 #### Setup
 
-1. Make sure the Atavism Server is in `atavism_server` directory. It can be plain files, a Git repo or a symlink.
+1. Install VS code extension [Trigger Task on Save](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.triggertaskonsave) to enable auto building and deployment of `agis.jar` to the Atavism Server on saving `*.java` and `*.gradle` files.
 
-2. Unzip your AGIS source files to `src/lib`. The full path should be `src/lib/atavism/agis`.
+2. Set up the path to your JDK8 Runtime for VS Code in `.vscode/settings.js`. This will provide you with Java language server support while coding compliant with the AGIS server compatible Java version.
 
-3. Install VS code extension [Trigger Task on Save](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.triggertaskonsave) to enable auto building and deployment of `agis.jar` to the Atavism Server on saving `*.java` and `*.gradle` files.
-
-4. Install [Gradle](https://gradle.org/install/)
-
-5. Set up the path to your JDK8 Runtime for VS Code in `.vscode/settings.js`. This will provide you with Java language server support while coding compliant with the AGIS server compatible Java version.
-
-6. If VS Code is not providing Java autocompletions and suggestions, reload your Java Language Server and Java Project workspace in VS Code: `Cmd/Ctrl + ,` --> _Java: Restart Java Language Server_ and then `Cmd/Ctrl + ,` --> _Java: Clean Java Language Server Workspace_.
+3. If VS Code is not providing Java autocompletions and suggestions, reload your Java Language Server and Java Project workspace in VS Code: `Cmd/Ctrl + ,` --> _Java: Restart Java Language Server_ and then `Cmd/Ctrl + ,` --> _Java: Clean Java Language Server Workspace_.
 
 #### Commands
 
 - Development:Build tasks
+
+  - `./gradlew build` - Builds agis.jar and deploys it to `atavism_server`. It will register your custom plugins and messages automatically.
 
   - `./gradlew dev.reload` - Builds agis.jar, deploys it and restarts the Atavism Server process in the world container. Triggered automatically in VS code on save of any \*.java files in your `src/` directory.
 
@@ -110,6 +116,10 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
   - `./gradlew dev.down` - Stops Docker containers for development
   - `./gradlew dev.logs` - Display logs for the dev containers
   - `./gradlew dev.restart` - Restarts Docker containers for development
+
+- Code Generation
+  - `./gradlew -PpluginName=Superhero newPlugin` - Creates a new plugin in `src/plugins/` from a boilerplate
+  - `./gradlew -PpluginName=Superhero -PmessageName=ShootLaserFromEyes newGenericMessage` - Creates a new client to server message boilerplate in your `Superhero` plugin named `ShootLaserFromEyes`
 
 #### Structure
 

@@ -73,6 +73,8 @@ openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > privat
 
 ### Development with VS Code + Gradle workflow
 
+This repo sets you up with automatic reload of the Atavism Server on File save in VS Code for ease of development.
+
 #### Setup
 
 1. Install VS code extension [Trigger Task on Save](https://marketplace.visualstudio.com/items?itemName=Gruntfuggly.triggertaskonsave) to enable auto building and deployment of `agis.jar` to the Atavism Server on saving `*.java` and `*.gradle` files.

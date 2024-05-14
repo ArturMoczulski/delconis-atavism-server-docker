@@ -42,7 +42,10 @@ _Note:_ Currently the services do not have a docker healthcheck implemented, so 
 
 ```C#
 NetworkAPI.SendExtensionMessage(
-  ClientAPI.GetPlayerOid(), false, "superhero.MSG_TYPE_SUPERHERO_SHOOT_LASER_FROM_EYES", new Dictionary<string, object>()
+  ClientAPI.GetPlayerOid(), // object id of the subject
+  false, 
+  "superhero.MSG_TYPE_SUPERHERO_SHOOT_LASER_FROM_EYES", // your client message
+  new Dictionary<string, object>() // your client message props (empty is fine)
 );
 ```
 

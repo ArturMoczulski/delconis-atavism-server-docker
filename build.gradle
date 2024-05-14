@@ -187,12 +187,13 @@ task genertateWorldSh(type : GenerateWorldShTask) {
 }
 task newPlugin(type: NewPluginTask) {
     projectDir = projectDir.toString()
-    pluginName = 'MyNew' // Change this to the desired plugin name
+    pluginName = project.property('pluginName')
 }
 task newGenericMessage(type: NewGenericMessageTask) {
     projectDir = projectDir.toString()
-    pluginName = 'MyNew' // Change this to the desired plugin name
-    messageName = 'SomeMessageFromClient' // Change this to the desired plugin name
+
+    pluginName = project.findProperty('pluginName')
+    messageName = project.findProperty('messageName')
 }
 //   _____         _       
 //  |_   _|__  ___| |_ ___ 

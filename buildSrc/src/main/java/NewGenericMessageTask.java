@@ -50,21 +50,14 @@ public abstract class NewGenericMessageTask extends DefaultTask {
 
     @TaskAction
     public void newGenericMessage() throws Exception {
-        // Convert pluginName to camelCase and snake_case formats
-        String pluginCamelCase = pluginName;
-        String pluginSnakeCase = pluginName.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
-        String pluginCapitalizedSnakeCase = pluginSnakeCase.toUpperCase();
-
-        // Convert messageName to camelCase and snake_case formats
-        String messageCamelCase = messageName;
-        String messageSnakeCase = messageName.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
-        String messageCapitalizedSnakeCase = messageSnakeCase.toUpperCase();
+        // Convert pluginName and messageName to various formats
+        NamingContext namingContext = new NamingContext(pluginName, messageName);
 
         // Prepare Handlebars
         Handlebars handlebars = new Handlebars();
 
         // Check if the plugin exists
-        Path targetDir = Paths.get(customPluginsPath, pluginCamelCase);
+        Path targetDir = Paths.get(customPluginsPath, namingContext.getPluginCamelCase());
         if (!Files.exists(targetDir) || !Files.isDirectory(targetDir)) {
             throw new IOException("The plugin with the name " + pluginName + " does not exist in " + customPluginsPath);
         }
@@ -73,138 +66,261 @@ public abstract class NewGenericMessageTask extends DefaultTask {
         Path templateDir = Paths.get(pluginTemplatePath);
         Files.walk(templateDir).forEach(source -> {
             try {
-                if (Files.isDirectory(source)) {
+                if (Files.isDirectory(source))
                     return;
-                }
-
-                // Relativize the source path to get the template path
-                Path relativeSource = templateDir.relativize(source);
 
                 // Process only .hbs files
-                if (!relativeSource.toString().endsWith(".hbs")) {
+                if (!source.toString().endsWith(".hbs"))
                     return;
-                }
 
-                Template fileNameTemplate = handlebars.compileInline(relativeSource.toString());
-
-                // Prepare context for the file name
-                Map<String, Object> fileNameContext = new HashMap<>();
-                fileNameContext.put("pluginCamelCase", pluginCamelCase);
-                String processedFileName = fileNameTemplate.apply(fileNameContext);
-
-                // Remove .hbs suffix from the processed file name
-                if (processedFileName.endsWith(".hbs")) {
-                    processedFileName = processedFileName.substring(0, processedFileName.length() - 4);
-                }
-
-                // Resolve the destination path with the processed file name
-                Path destination = targetDir.resolve(processedFileName);
-
-                // Read template file
-                List<String> templateLines = Files.readAllLines(source);
-                String content = String.join("\n", templateLines);
-                Template contentTemplate = handlebars.compileInline(content);
-
-                // Prepare context for the file content
-                Map<String, Object> contentContext = new HashMap<>();
-                contentContext.put("pluginCamelCase", pluginCamelCase);
-                contentContext.put("pluginSnakeCase", pluginSnakeCase);
-                contentContext.put("pluginCapitalizedSnakeCase", pluginCapitalizedSnakeCase);
-                contentContext.put("messageCamelCase", messageCamelCase);
-                contentContext.put("messageCapitalizedSnakeCase", messageCapitalizedSnakeCase);
-
-                // Parse and get injection info
-                String injectLine = templateLines.get(0);
-                injectLine = injectLine.substring(4, injectLine.length() - 3).trim(); // Remove the {{!-- and --}}
-                                                                                      // markers
-                InjectionInfo injectionInfo = parseInjectionInfo(injectLine, contentContext);
-
-                // Process template content
-                String output = contentTemplate.apply(contentContext);
-
-                // Modify the existing file by injecting the content
-                if (Files.exists(destination)) {
-                    List<String> existingLines = Files.readAllLines(destination);
-                    int injectionLineNumber = findInjectionLine(existingLines, injectionInfo);
-                    if (injectionLineNumber >= 0) {
-                        List<String> modifiedLines = new ArrayList<>(existingLines);
-                        modifiedLines.add(injectionLineNumber, output);
-                        Files.write(destination, modifiedLines);
-                    }
-                }
+                TemplateProcessor templateProcessor = new TemplateProcessor(source, templateDir, namingContext,
+                        handlebars);
+                templateProcessor.process(targetDir);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
     }
 
-    private InjectionInfo parseInjectionInfo(String injectLine, Map<String, Object> context) throws IOException {
-        Pattern pattern = Pattern.compile("@Inject\\(\"(.*?)\",\\s*\"(.*?)\",\\s*\"(.*?)\"\\)");
-        Matcher matcher = pattern.matcher(injectLine);
-        if (matcher.find()) {
-            String type = matcher.group(1);
-            String target = matcher.group(2);
-            String position = matcher.group(3);
+    private static class NamingContext {
+        private final String pluginCamelCase;
+        private final String pluginSnakeCase;
+        private final String pluginCapitalizedSnakeCase;
+        private final String messageCamelCase;
+        private final String messageSnakeCase;
+        private final String messageCapitalizedSnakeCase;
 
-            // Process the target to handle handlebars
-            Handlebars handlebars = new Handlebars();
-            Template targetTemplate = handlebars.compileInline(target);
-            String processedTarget = targetTemplate.apply(context);
+        public NamingContext(String pluginName, String messageName) {
+            this.pluginCamelCase = pluginName;
+            this.pluginSnakeCase = pluginName.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
+            this.pluginCapitalizedSnakeCase = pluginSnakeCase.toUpperCase();
+            this.messageCamelCase = messageName;
+            this.messageSnakeCase = messageName.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
+            this.messageCapitalizedSnakeCase = messageSnakeCase.toUpperCase();
+        }
 
-            return new InjectionInfo(type, processedTarget, position);
-        } else {
-            throw new IOException("Invalid inject line: " + injectLine);
+        public String getPluginCamelCase() {
+            return pluginCamelCase;
+        }
+
+        public String getPluginSnakeCase() {
+            return pluginSnakeCase;
+        }
+
+        public String getPluginCapitalizedSnakeCase() {
+            return pluginCapitalizedSnakeCase;
+        }
+
+        public String getMessageCamelCase() {
+            return messageCamelCase;
+        }
+
+        public String getMessageSnakeCase() {
+            return messageSnakeCase;
+        }
+
+        public String getMessageCapitalizedSnakeCase() {
+            return messageCapitalizedSnakeCase;
+        }
+
+        public Map<String, Object> toMap() {
+            Map<String, Object> context = new HashMap<>();
+            context.put("pluginCamelCase", pluginCamelCase);
+            context.put("pluginSnakeCase", pluginSnakeCase);
+            context.put("pluginCapitalizedSnakeCase", pluginCapitalizedSnakeCase);
+            context.put("messageCamelCase", messageCamelCase);
+            context.put("messageSnakeCase", messageSnakeCase);
+            context.put("messageCapitalizedSnakeCase", messageCapitalizedSnakeCase);
+            return context;
         }
     }
 
-    private int findInjectionLine(List<String> lines, InjectionInfo injectionInfo) {
-        String type = injectionInfo.getType();
-        String target = injectionInfo.getTarget();
-        String position = injectionInfo.getPosition();
+    private static class TemplateProcessor {
+        private final Path source;
+        private final Path templateDir;
+        private final NamingContext namingContext;
+        private final Handlebars handlebars;
 
-        int braceCount = 0;
-        boolean insideTarget = false;
+        public TemplateProcessor(Path source, Path templateDir, NamingContext namingContext, Handlebars handlebars) {
+            this.source = source;
+            this.templateDir = templateDir;
+            this.namingContext = namingContext;
+            this.handlebars = handlebars;
+        }
 
-        for (int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i).trim();
+        public void process(Path targetDir) throws IOException {
+            // Read the template content as plain text
+            String templateContent = new String(Files.readAllBytes(source));
 
-            if (type.equals("class") && line.contains("class " + target)) {
-                insideTarget = true;
+            // Determine the relative path of the template file
+            Path relativeSource = templateDir.relativize(source);
+
+            // Apply the Handlebars context to the relative path
+            Template pathTemplate = handlebars.compileInline(relativeSource.toString());
+            String processedRelativePath = pathTemplate.apply(namingContext.toMap());
+
+            // Remove .hbs suffix from the processed file name
+            if (processedRelativePath.endsWith(".hbs")) {
+                processedRelativePath = processedRelativePath.substring(0, processedRelativePath.length() - 4);
             }
 
-            if (insideTarget) {
-                braceCount += countOccurrences(line, '{');
-                braceCount -= countOccurrences(line, '}');
+            // Resolve the destination path with the processed relative path
+            Path destination = targetDir.resolve(processedRelativePath);
 
-                if (braceCount == 0 && line.endsWith("}")) {
-                    if (position.equals("end")) {
-                        return i; // Insert before the closing brace
+            // Process each injection point in the template file
+            InjectionProcessor injectionProcessor = new InjectionProcessor(templateContent, destination, namingContext,
+                    handlebars);
+            injectionProcessor.process();
+        }
+    }
+
+    private static class InjectionProcessor {
+        private final String content;
+        private final Path destination;
+        private final NamingContext namingContext;
+        private final Handlebars handlebars;
+
+        public InjectionProcessor(String content, Path destination, NamingContext namingContext,
+                Handlebars handlebars) {
+            this.content = content;
+            this.destination = destination;
+            this.namingContext = namingContext;
+            this.handlebars = handlebars;
+        }
+
+        public void process() throws IOException {
+            Pattern injectPattern = Pattern.compile(
+                    "\\{\\{!--\\s*@Inject\\(\"([^\"]+)\",\\s*\"([^\"]+)\",?\\s*\"?([^\"]*)\"?,?\\s*\"?([^\"]*)\"?\\)\\s*--\\}\\}");
+            Matcher injectMatcher = injectPattern.matcher(content);
+
+            while (injectMatcher.find()) {
+                String type = injectMatcher.group(1);
+                String target = injectMatcher.group(2);
+                String method = injectMatcher.group(3);
+                String position = injectMatcher.group(4);
+
+                // Extract the code block associated with this injection point
+                int start = injectMatcher.end();
+                int end = content.indexOf("{{!--", start);
+                if (end == -1) {
+                    end = content.length();
+                }
+                String codeBlock = content.substring(start, end);
+
+                // Process the target to handle handlebars
+                Template targetTemplate = handlebars.compileInline(target);
+                String processedTarget = targetTemplate.apply(namingContext.toMap());
+
+                // Process the method to handle handlebars
+                Template methodTemplate = handlebars.compileInline(method);
+                String processedMethod = methodTemplate.apply(namingContext.toMap());
+
+                // Process the code block to handle handlebars
+                Template codeBlockTemplate = handlebars.compileInline(codeBlock);
+                String processedCodeBlock = codeBlockTemplate.apply(namingContext.toMap());
+
+                // Inject the code block into the destination file
+                if (Files.exists(destination)) {
+                    List<String> existingLines = Files.readAllLines(destination);
+                    int injectionLineNumber = findInjectionLine(existingLines,
+                            new InjectionInfo(type, processedTarget, processedMethod, position));
+
+                    if (injectionLineNumber >= 0) {
+                        List<String> modifiedLines = new ArrayList<>(existingLines);
+                        modifiedLines.add(injectionLineNumber, processedCodeBlock);
+                        Files.write(destination, modifiedLines);
                     }
                 }
             }
         }
-        return -1; // Not found
-    }
 
-    private int countOccurrences(String line, char ch) {
-        int count = 0;
-        for (char c : line.toCharArray()) {
-            if (c == ch) {
-                count++;
+        private int findInjectionLine(List<String> lines, InjectionInfo injectionInfo) {
+            String type = injectionInfo.getType();
+            String target = injectionInfo.getTarget();
+            String method = injectionInfo.getMethod();
+            String position = injectionInfo.getPosition();
+
+            boolean insideTarget = false;
+            boolean insideMethod = false;
+            int braceCount = 0;
+            int methodBraceCount = 0;
+
+            // Pattern to match method definitions
+            Pattern methodPattern = Pattern.compile(
+                    "\\b(public|protected|private|static|final|native|synchronized|abstract|transient|volatile)\\s+" +
+                            "(\\<[^>]+\\>\\s+)?(\\w+\\s+)+" +
+                            "\\b" + method + "\\b" + "\\s*\\([^\\)]*\\)\\s*\\{");
+
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i).trim();
+
+                if ((type.equals("class") || type.equals("method")) && line.contains("class " + target)) {
+                    insideTarget = true;
+                }
+
+                if (insideTarget && type.equals("method") && methodPattern.matcher(line).find()) {
+                    insideMethod = true;
+                }
+
+                if (insideTarget) {
+                    braceCount += countOccurrences(line, '{');
+                    braceCount -= countOccurrences(line, '}');
+
+                    if (insideMethod) {
+                        methodBraceCount += countOccurrences(line, '{');
+                        methodBraceCount -= countOccurrences(line, '}');
+
+                        if (methodBraceCount == 0 && line.contains("}")) {
+                            if (position.equals("end")) {
+                                return i; // Insert before the closing brace of the method
+                            }
+                            insideMethod = false; // Reset for potential nested methods
+                        }
+                    }
+
+                    if (type.equals("class") && braceCount == 0) {
+                        if (position.equals("end")) {
+                            return i; // Insert before the closing brace of the class
+                        }
+                        insideTarget = false; // Reset for potential nested classes
+                    }
+                }
             }
+            return -1; // Not found
         }
-        return count;
+
+        private int countOccurrences(String line, char ch) {
+            int count = 0;
+            boolean inString = false;
+            for (int i = 0; i < line.length(); i++) {
+                char c = line.charAt(i);
+                if (c == '"')
+                    inString = !inString; // toggle in-string status
+                if (!inString && c == ch)
+                    count++;
+            }
+            return count;
+        }
+
     }
 
     private static class InjectionInfo {
-        private final String type;
-        private final String target;
-        private final String position;
+        private String type = null;
+        private String target = null;
+        private String method = null;
+        private String position = null;
 
-        public InjectionInfo(String type, String target, String position) {
-            this.type = type;
-            this.target = target;
-            this.position = position;
+        public InjectionInfo(String param1, String param2, String param3, String param4) {
+            if (param1.equals("method")) {
+                this.type = param1;
+                this.target = param2;
+                this.method = param3;
+                this.position = param4;
+            } else if (param1.equals("class")) {
+                this.type = param1;
+                this.target = param2;
+                this.position = param3;
+            }
         }
 
         public String getType() {
@@ -213,6 +329,10 @@ public abstract class NewGenericMessageTask extends DefaultTask {
 
         public String getTarget() {
             return target;
+        }
+
+        public String getMethod() {
+            return method;
         }
 
         public String getPosition() {

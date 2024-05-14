@@ -24,8 +24,13 @@ public class {{pluginCamelCase}}Plugin extends EnginePlugin {
 	public void onActivate() {
 		log.info("{{pluginCamelCase}}Plugin activate");
 		super.onActivate();
+		this.registerHooks();
 	}
 
 	private static final Logger log = new Logger("{{pluginCamelCase}}Plugin");
+
+	public void registerHooks() {
+	}
+
 
 }

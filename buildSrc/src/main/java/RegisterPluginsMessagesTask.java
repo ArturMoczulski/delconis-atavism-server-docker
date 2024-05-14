@@ -55,11 +55,15 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
         assembleProxyAds(clientMessages);
         assemblePluginsAds(pluginClasses, clientMessages);
         assembleWorldMarshallers(clientMessagesClasses);
+        /**
+         * TODO: the message initializers need to go to the bottom
+         * of MessageInitializer as the order does seem to matter
+         */
         assembleMessageInitializer(clientMessages);
     }
 
     private void assembleMessageInitializer(
-            HashMap<Class<?>, Set<Field>> clientMessages) throws IOException, RegexNotFound {
+            HashMap<Class<?>, Set<Field>> clientMessages) throws IOException, FunctionNotFound {
         injectMessageInitialzers(clientMessages, projectDir + "/" + messageInitializerPath);
         System.out.println("Generated client messages initializer in " + messageInitializerPath);
     }
@@ -119,7 +123,7 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
 
     private void injectMessageInitialzers(
             HashMap<Class<?>, Set<Field>> clientMessages,
-            String filePath) throws IOException, RegexNotFound {
+            String filePath) throws IOException, FunctionNotFound {
         String messageInitializersString = JavaGenerator
                 .generateAtavismMessageInitializers(clientMessages);
 

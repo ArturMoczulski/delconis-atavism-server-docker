@@ -22,9 +22,11 @@ Development workflow and Docker setup for Atavism Server
 
 1. Download Atavism Server ZIP and Agis ZIP from [Atavism Online APanel](https://apanel.atavismonline.com/) into `archives/`.
 
-2. `./gradlew dev.up`
+2. Set up your email and Atavism license key in `docker/compose/development/.env` using `.env.example` boilerplate in the same directory.
 
-3. Connect with your Unity client.
+3. `./gradlew dev.up`
+
+4. Connect with your Unity client.
 
 ### Creating a new plugin
 
@@ -63,7 +65,7 @@ Atavism Server with this repo will run each module (including your custom plugin
 
 #### SSL
 
-Create or provide a OpenSSH Key `private.key` to the root of this project
+1. Create or provide a OpenSSH Key `private.key` to the root of this project
 
 ```
 docker run -it -v ./ssl/:/key mysql /bin/sh
@@ -74,6 +76,8 @@ openssl rsa -in atavism.pem -outform PEM -pubout -out atavismkey.txt
 openssl rsa -in atavism.pem -out private.pem -outform PEM
 openssl pkcs8 -topk8 -inform PEM -outform DER -in private.pem  -nocrypt > private.key
 ```
+
+2. Copy your public key `atavismkey.txt` to the root of your Unity project.
 
 ### Development with VS Code + Gradle workflow
 

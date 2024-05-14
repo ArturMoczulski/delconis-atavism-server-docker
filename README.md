@@ -26,7 +26,7 @@ Development workflow and Docker setup for Atavism Server
 
 3. `./gradlew dev.up`
 
-_Note:_ Currently the services do not have a docker healthcheck implemented, so they tend to fail connect to the database at first start. It's recommended to run `./gradle dev.restart` again after a couple of seconds if you're experiencing issues connecting to your Atavism Server. 
+_Note:_ Currently the services do not have a docker healthcheck implemented, so they tend to fail connect to the database at first start. It's recommended to run `./gradlew dev.restart` again after a couple of seconds if you're experiencing issues connecting to your Atavism Server. 
 
 5. Connect with your Unity client.
 

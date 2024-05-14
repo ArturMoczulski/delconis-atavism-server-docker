@@ -135,7 +135,10 @@ task ('dev.reload') {
 task 'dev.up' {
     description "Starts Docker containers for development"
     group = 'Development:Docker'
-    doFirst {
+
+    dependsOn build
+
+    doLast {
         dockerCompose('up', "docker/compose/development/single.yml", ['-d'])
     }
 }
@@ -151,7 +154,7 @@ task 'dev.down' {
 task 'dev.restart' {
     description "Restarts Docker containers for development"
     group = 'Development:Docker'
-    dependsOn 'dev.down','dev.up'
+    dependsOn 'build', 'dev.down','dev.up'
 }
 
 task 'dev.logs' {

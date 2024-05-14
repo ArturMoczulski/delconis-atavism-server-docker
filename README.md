@@ -22,11 +22,9 @@ Development workflow and Docker setup for Atavism Server
 
 1. Download Atavism Server ZIP and Agis ZIP from [Atavism Online APanel](https://apanel.atavismonline.com/) into `archives/`.
 
-2. `./gradlew install`
+2. `./gradlew dev.up`
 
-3. `./gradlew dev.up`
-
-4. Connect with your Unity client.
+3. Connect with your Unity client.
 
 ### Creating a new plugin
 

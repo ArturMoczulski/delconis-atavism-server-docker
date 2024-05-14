@@ -78,7 +78,7 @@ task unzipAtavismServer {
 
         // Check if the atavism_server directory or symlink already exists
         if (serverDir.exists()) {
-            println "✅ Atavism Server already initialized..."
+            println "✅ Atavism Server found in atavism_server/..."
         } else {
             // Check if the ZIP archive exists
             def archive = archiveFile()
@@ -104,7 +104,7 @@ task unzipAgis {
 
         // Check if the atavism_server directory or symlink already exists
         if (serverDir.exists()) {
-            println "✅ AGIS source code already initialized..."
+            println "✅ AGIS source code found in src/lib..."
         }
         else {
             // Check if the ZIP archive exists

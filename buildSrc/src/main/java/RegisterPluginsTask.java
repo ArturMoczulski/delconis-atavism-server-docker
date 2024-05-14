@@ -43,6 +43,10 @@ public abstract class RegisterPluginsTask extends DefaultTask {
     void registerPlugins() throws Exception {
         Set<Class<? extends EnginePlugin>> pluginClasses = new PluginDiscoveryService(projectDir).pluginClasses();
 
+        if (pluginClasses.size() == 0) {
+            return;
+        }
+
         copyPluginsRegistrationFiles(pluginClasses);
         assembleServerStarter(pluginClasses);
         assembleAllInOne(pluginClasses);
@@ -57,12 +61,15 @@ public abstract class RegisterPluginsTask extends DefaultTask {
 
     private void assembleAllInOnePostScript(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
 
-        JavaInjector.addToPostScript(
-                projectDir + "/" + allInOnePath,
-                "CustomPluginsAllInOnePostScript",
-                JavaGenerator.generatePostScript(pluginClasses));
+        if (pluginClasses.size() > 0)
+        {
+            JavaInjector.addToPostScript(
+                    projectDir + "/" + allInOnePath,
+                    "CustomPluginsAllInOnePostScript",
+                    JavaGenerator.generatePostScript(pluginClasses));
 
-        System.out.println("Generated postScript method in " + allInOnePath);
+            System.out.println("Generated postScript method in " + allInOnePath);
+        }
     }
 
     private void assembleAllInOneAdsMerges(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
@@ -79,21 +86,24 @@ public abstract class RegisterPluginsTask extends DefaultTask {
                     projectDir + "/" + allInOnePath,
                     "CustomPluginsAllInOneAdsMerger",
                     String.join(", ", pluginNames));
+            System.out.println("Generated All In One Ads merger in " + allInOnePath);
         }
 
-        System.out.println("Generated All In One Ads merger in " + allInOnePath);
     }
 
     private void assembleServerStarter(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
         String allStarters = JavaGenerator.generateServerStarterMethods(pluginClasses);
 
-        JavaInjector.injectBeforeMethod(
-                projectDir + "/" + serverStarterPath,
-                "startDomain",
-                "CustomPluginsServerStarterMethods",
-                allStarters.toString());
+        if (pluginClasses.size() > 0)
+        {
+            JavaInjector.injectBeforeMethod(
+                    projectDir + "/" + serverStarterPath,
+                    "startDomain",
+                    "CustomPluginsServerStarterMethods",
+                    allStarters.toString());
+            System.out.println("Generated ServerStarter methods in " + serverStarterPath);
+        }
 
-        System.out.println("Generated ServerStarter methods in " + serverStarterPath);
     }
 
     private void copyPluginsRegistrationFiles(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {

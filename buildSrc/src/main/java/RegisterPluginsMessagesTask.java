@@ -55,26 +55,32 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
         assembleProxyAds(clientMessages);
         assemblePluginsAds(pluginClasses, clientMessages);
         assembleWorldMarshallers(clientMessagesClasses);
-        /**
-         * TODO: the message initializers need to go to the bottom
-         * of MessageInitializer as the order does seem to matter
-         */
         assembleMessageInitializer(clientMessages);
     }
 
     private void assembleMessageInitializer(
             HashMap<Class<?>, Set<Field>> clientMessages) throws IOException, FunctionNotFound {
+        if (clientMessages.size() == 0) {
+            return;
+        }
         injectMessageInitialzers(clientMessages, projectDir + "/" + messageInitializerPath);
         System.out.println("Generated client messages initializer in " + messageInitializerPath);
     }
 
     private void assembleWorldMarshallers(HashMap<Class<?>, Set<Class<? extends Message>>> clientMessagesClasses) {
+        if (clientMessagesClasses.size() == 0) {
+            return;
+        }
         injectWorldMarshallers(clientMessagesClasses, projectDir + "/" + worldMarshallersPath);
         System.out.println("Generated client messages world marshallers in " + worldMarshallersPath);
     }
 
     private void assemblePluginsAds(Set<Class<? extends EnginePlugin>> pluginClasses,
             HashMap<Class<?>, Set<Field>> clientMessages) throws Exception {
+        if (pluginClasses.size() == 0) {
+            return;
+        }
+
         // Ensure the directory path exists
         Path directory = Paths.get(projectDir + "/" + worldDir);
         try {
@@ -112,11 +118,19 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     }
 
     private void assembleProxyAds(HashMap<Class<?>, Set<Field>> clientMessages) {
+        if (clientMessages.size() == 0) {
+            return;
+        }
+
         injectAds(clientMessages, projectDir + "/" + proxyAdsPath);
         System.out.println("Generated client messages ads in " + proxyAdsPath);
     }
 
     private void assembleAllInOneAds(HashMap<Class<?>, Set<Field>> clientMessages) {
+        if (clientMessages.size() == 0) {
+            return;
+        }
+
         injectAds(clientMessages, projectDir + "/" + allInOneAdsPath);
         System.out.println("Generated client messages ads in " + allInOneAdsPath);
     }
@@ -154,6 +168,10 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     }
 
     private void assembleExtensionsProxyPy(HashMap<Class<?>, Set<Field>> clientMessages) {
+        if (clientMessages.size() == 0) {
+            return;
+        }
+
         injectExtensionSubtypesRegistrations(clientMessages);
     }
 
@@ -169,6 +187,10 @@ public abstract class RegisterPluginsMessagesTask extends DefaultTask {
     }
 
     private void assembleWorldMessagesPy(HashMap<Class<?>, Set<Field>> clientMessages) {
+        if (clientMessages.size() == 0) {
+            return;
+        }
+
         injectWorldMessagesPyImports(clientMessages.keySet());
         injectWorldMessaggesPyMsgTranslations(clientMessages);
     }

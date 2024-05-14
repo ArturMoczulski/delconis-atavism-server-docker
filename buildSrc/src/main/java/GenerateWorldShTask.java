@@ -41,6 +41,10 @@ public abstract class GenerateWorldShTask extends DefaultTask {
                 Set<Class<? extends EnginePlugin>> pluginClasses = new PluginDiscoveryService(projectDir)
                                 .pluginClasses();
 
+                if (pluginClasses.size() == 0) {
+                return;
+                }
+
                 assembleWorldSh(pluginClasses);
 
         }

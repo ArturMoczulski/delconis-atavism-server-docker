@@ -57,6 +57,10 @@ public abstract class SetPluginsPropertiesTask extends DefaultTask {
     void setPluginsPropertiesTask() throws Exception {
         Set<Class<? extends EnginePlugin>> pluginClasses = new PluginDiscoveryService(projectDir).pluginClasses();
 
+        if (pluginClasses.size() == 0) {
+            return;
+        }
+
         assembleWorldProperties(pluginClasses);
     }
 

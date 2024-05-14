@@ -73,10 +73,13 @@ public abstract class RegisterPluginsTask extends DefaultTask {
             pluginNames.add("\"" + convertToSnakeCase(pluginClass.getSimpleName().replace("Plugin", "")) + "\"");
         }
 
-        JavaInjector.addToAdsMerger(
-                projectDir + "/" + allInOnePath,
-                "CustomPluginsAllInOneAdsMerger",
-                String.join(", ", pluginNames));
+        if (pluginNames.size() > 0)
+        {
+            JavaInjector.addToAdsMerger(
+                    projectDir + "/" + allInOnePath,
+                    "CustomPluginsAllInOneAdsMerger",
+                    String.join(", ", pluginNames));
+        }
 
         System.out.println("Generated All In One Ads merger in " + allInOnePath);
     }

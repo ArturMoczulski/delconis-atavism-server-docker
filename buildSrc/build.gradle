@@ -122,8 +122,35 @@ task unzipAgis {
     }
 }
 
+task checkEnvFiles {
+    group = "Environment"
+    description = "Check if .env files exist and copy from .env.example if they don't"
+
+    doLast {
+        def envPaths = [
+            ['example': '../docker/compose/development/.env.example', 'env': '../docker/compose/development/.env'],
+            ['example': '../docker/compose/production/.env.example', 'env': '../docker/compose/production/.env']
+        ]
+
+        envPaths.each { paths ->
+            def examplePath = file(paths.example)
+            def envPath = file(paths.env)
+            if (!envPath.exists()) {
+                copy {
+                    from examplePath
+                    into envPath.parent
+                    rename { String fileName ->
+                        fileName.replace('.env.example', '.env')
+                    }
+                }
+                println "Generating env files from templates: ${examplePath} to ${envPath}"
+            }
+        }
+    }
+}
+
 task unzipAtavismDependencies {
-    dependsOn install
+    dependsOn checkEnvFiles, install
     dependsOn unzipAtavismServer, unzipAgis
 }
 

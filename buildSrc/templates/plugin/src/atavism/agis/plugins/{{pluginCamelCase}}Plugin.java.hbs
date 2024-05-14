@@ -1,0 +1,30 @@
+package atavism.agis.plugins;
+
+import atavism.msgsys.Message;
+import atavism.msgsys.MessageTypeFilter;
+import atavism.server.engine.Engine;
+import atavism.server.engine.EnginePlugin;
+import atavism.server.engine.Hook;
+import atavism.server.engine.Namespace;
+import atavism.server.engine.OID;
+import atavism.server.objects.Entity;
+import atavism.server.util.Logger;
+
+public class {{pluginCamelCase}}Plugin extends EnginePlugin {
+	public {{pluginCamelCase}}Plugin() {
+		super("{{pluginCamelCase}}Plugin");
+		setPluginType("{{pluginCamelCase}}Plugin");
+	}
+
+	public String getName() {
+		return "{{pluginCamelCase}}";
+	}
+
+	public void onActivate() {
+		log.info("{{pluginCamelCase}}Plugin activate");
+		super.onActivate();
+	}
+
+	private static final Logger log = new Logger("{{pluginCamelCase}}Plugin");
+
+}

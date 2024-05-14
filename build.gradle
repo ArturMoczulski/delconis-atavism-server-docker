@@ -187,6 +187,10 @@ task setPluginsProperties(type : SetPluginsPropertiesTask) {
 task genertateWorldSh(type : GenerateWorldShTask) {
     projectDir = project.projectDir
 }
+task newPlugin(type: NewPluginTask) {
+    projectDir = projectDir.toString()
+    pluginName = 'MyNew' // Change this to the desired plugin name
+}
 //   _____         _       
 //  |_   _|__  ___| |_ ___ 
 //    | |/ _ \/ __| __/ __|

@@ -9,7 +9,6 @@ ssl/*
 
 # Gradle
 **/.gradle
-gradle
 build
 
 # Source

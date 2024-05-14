@@ -1,0 +1,12 @@
+{{!-- @Inject("class", "{{pluginCamelCase}}Plugin", "end") --}}
+	/**
+	* {{messageCamelCase}} Hook
+	*/
+	class {{messageCamelCase}}Hook implements Hook {
+		public boolean processMessage(Message msg, int flags) {
+			log.info("{{messageCamelCase}} triggered!");
+			ExtensionMessage gmMsg = (ExtensionMessage) msg;
+
+			return true;
+		}
+	}

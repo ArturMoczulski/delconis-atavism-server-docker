@@ -1,0 +1,24 @@
+{{!-- @Inject("class", "{{pluginCamelCase}}Client", "end") --}}
+		/**
+		* {{messageCamelCase}} Class
+		*/
+		public static class {{messageCamelCase}}Message extends ExtensionMessage {
+			private static final long serialVersionUID = 1L;
+
+			public {{messageCamelCase}}Message() {
+
+				super();
+			}
+
+			public {{messageCamelCase}}Message(OID oid) {
+				super(oid);
+				setMsgType(MSG_TYPE_{{pluginCapitalizedSnakeCase}}_{{messageCapitalizedSnakeCase}});
+				Log.info("{{messageCamelCase}} created!");
+			}
+		}
+
+		/**
+		* {{messageCamelCase}} constant
+		*/
+		public static final MessageType MSG_TYPE_{{pluginCapitalizedSnakeCase}}_{{messageCapitalizedSnakeCase}} = MessageType
+				.intern("{{pluginSnakeCase}}.{{messageCapitalizedSnakeCase}}");

@@ -10,7 +10,7 @@ import com.github.jknack.handlebars.Template;
 
 public abstract class NewPluginTask extends DefaultTask {
 
-    public static final String pluginTemplatePath = "buildSrc/templates/plugin";
+    public static final String pluginTemplatePath = "buildSrc/templates/EnginePlugin";
     public static final String customPluginsPath = "src/plugins";
 
     private String projectDir;

@@ -52,7 +52,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
         assembleAllInOneAdsMerges(pluginClasses);
         assembleAllInOnePostScript(pluginClasses);
 
-        System.out.println("Generated AllInOneServer in " + serverStarterPath);
+        System.out.println("Generated AllInOneServer in " + allInOnePath);
     }
 
     private void assembleAllInOnePostScript(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
@@ -62,7 +62,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
                 "CustomPluginsAllInOnePostScript",
                 JavaGenerator.generatePostScript(pluginClasses));
 
-        System.out.println("Generated postScript method in " + serverStarterPath);
+        System.out.println("Generated postScript method in " + allInOnePath);
     }
 
     private void assembleAllInOneAdsMerges(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {
@@ -78,7 +78,7 @@ public abstract class RegisterPluginsTask extends DefaultTask {
                 "CustomPluginsAllInOneAdsMerger",
                 String.join(", ", pluginNames));
 
-        System.out.println("Generated ServerStarter methods in " + serverStarterPath);
+        System.out.println("Generated All In One Ads merger in " + allInOnePath);
     }
 
     private void assembleServerStarter(Set<Class<? extends EnginePlugin>> pluginClasses) throws Exception {

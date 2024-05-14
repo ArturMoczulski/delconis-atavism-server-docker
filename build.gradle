@@ -147,9 +147,7 @@ task 'dev.down' {
 task 'dev.restart' {
     description "Restarts Docker containers for development"
     group = 'Development:Docker'
-    doFirst {
-        dockerCompose('restart', "docker/compose/development/single.yml")
-    }
+    dependsOn 'dev.down','dev.up'
 }
 
 task 'dev.logs' {
@@ -190,6 +188,11 @@ task genertateWorldSh(type : GenerateWorldShTask) {
 task newPlugin(type: NewPluginTask) {
     projectDir = projectDir.toString()
     pluginName = 'MyNew' // Change this to the desired plugin name
+}
+task newGenericMessage(type: NewGenericMessageTask) {
+    projectDir = projectDir.toString()
+    pluginName = 'MyNew' // Change this to the desired plugin name
+    messageName = 'SomeMessageFromClient' // Change this to the desired plugin name
 }
 //   _____         _       
 //  |_   _|__  ___| |_ ___ 

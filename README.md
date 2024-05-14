@@ -83,6 +83,16 @@ This repo sets you up with automatic reload of the Atavism Server on File save i
 
 3. If VS Code is not providing Java autocompletions and suggestions, reload your Java Language Server and Java Project workspace in VS Code: `Cmd/Ctrl + ,` --> _Java: Restart Java Language Server_ and then `Cmd/Ctrl + ,` --> _Java: Clean Java Language Server Workspace_.
 
+#### Reload on Save
+
+1. Make changes in your `src/plugins/` files.
+
+2. Save your file in VS code.
+
+3. The Atavism Server will automatically reload.
+
+4. Check if you changes are working correctly.
+
 #### Commands
 
 - Development:Build tasks

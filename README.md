@@ -1,8 +1,8 @@
-## Atavism Server Docker Containers
+## Atavism Server Docker 
 
-Provides and example on how to create containers for a multi server setup.
+Development workflow and Docker setup for Atavism Server
 
-### Pre-Requsists
+### Prerequisites
 
 - [Docker Engine](https://www.docker.com/)
   - Recommended one of the following Docker Engine UI's:

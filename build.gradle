@@ -105,6 +105,10 @@ build {
     dependsOn 'genertateWorldSh'
 }
 
+task install {
+    dependsOn build
+}
+
 
 //   ____                 _                                  _   
 //  |  _ \  _____   _____| | ___  _ __  _ __ ___   ___ _ __ | |_ 

@@ -57,6 +57,10 @@ _Note:_ Remember to set `atavism.log_level=X` to an appropriate level in `atavis
 
 There are separate environment files for `development` and `production`. You can place them in `docker/compose/{environmentName}/.env` and use `.env.example` file as a boilerplate. This is where you can change your database credentials, etc. 
 
+#### Separate Processes vs All In One mode
+
+Atavism Server with this repo will run each module (including your custom plugins) as separate processes. This is good for development as each plugin will generate it's own log file in `atavism_server/logs/world`. If you wish to swtich to _All In One_ mode you can adjsut `ATAVISM_ALL_IN_ONE_ENABLED` variable in your env file in `docker/compose/{environmentName}/.env`.
+
 #### SSL
 
 Create or provide a OpenSSH Key `private.key` to the root of this project
@@ -81,7 +85,7 @@ This repo sets you up with automatic reload of the Atavism Server on File save i
 
 2. Set up the path to your JDK8 Runtime for VS Code in `.vscode/settings.js`. This will provide you with Java language server support while coding compliant with the AGIS server compatible Java version.
 
-3. If VS Code is not providing Java autocompletions and suggestions, reload your Java Language Server and Java Project workspace in VS Code: `Cmd/Ctrl + ,` --> _Java: Restart Java Language Server_ and then `Cmd/Ctrl + ,` --> _Java: Clean Java Language Server Workspace_.
+3. If VS Code is not providing Java autocompletions and suggestions, reload your Java Language Server and Java Project workspace in VS Code: `Cmd/Ctrl + ,` --> _Java: Restart Java Language Server_ and then `Cmd/Ctrl + ,` -> _Java: Clean Java Language Server Workspace_.
 
 #### Reload on Save
 

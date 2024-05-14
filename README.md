@@ -28,6 +28,8 @@ Development workflow and Docker setup for Atavism Server
 
 _Note:_ Currently the services do not have a docker healthcheck implemented, so they tend to fail connect to the database at first start. It's recommended to run `./gradlew dev.restart` again after a couple of seconds if you're experiencing issues connecting to your Atavism Server. 
 
+4. Wait for `DONE INITIALIZING, you can log in now` message in `world` service logs.
+
 5. Connect with your Unity client.
 
 ### Creating a new plugin

@@ -151,6 +151,16 @@ This repo sets you up with automatic reload of the Atavism Server on File save i
 
 - `ssl`: store your SSL keys here
 
+### Migrating existing plugins
+
+If you want to migrate your existing plugins to use the `atavism-server-docker` structure it's easy to do.
+
+1. Create a new plugin with the same name using the boilerplate: `./gradlew -PpluginName=MyExistingPluginName newPlugin`
+
+2. Move your plugin source code to `/src/plugins/MyExistingPluginName/src/atavism/agis/plugins`.
+
+3. `./gradlew dev.restart`
+
 ### Goals
 
 - [x] Easy `docker compose up -d` Setup for Demo server
